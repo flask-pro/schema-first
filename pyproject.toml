@@ -1,0 +1,67 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=42", "wheel"]
+
+[project]
+authors = [
+  {name = "Konstantin Fadeev", email = "fadeev@legalact.pro"}
+]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3"
+]
+dependencies = [
+  'PyYAML>=6.0.1',
+  'marshmallow>=3.14.1'
+]
+description = "Validate and convert OpenAPI specification via Marshmallow schemas."
+license = {file = "LICENSE"}
+name = "Schema-First"
+readme = "README.md"
+requires-python = ">=3.14"
+version = "0.1.0"
+
+[project.optional-dependencies]
+dev = [
+  "bandit==1.7.9",
+  "build==1.2.1",
+  'openapi-spec-validator>=0.5.0',
+  "pre-commit==3.8.0",
+  "pytest==8.3.2",
+  "pytest-cov==5.0.0",
+  "python-dotenv==1.0.1",
+  "twine==5.1.1"
+]
+
+[project.urls]
+changelog = "https://github.com/flask-pro/schema-first/blob/master/CHANGES.md"
+repository = "https://github.com/flask-pro/schema-first"
+
+[tool.black]
+extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+^/foo.py  # exclude a file named foo.py in the root of the project (in addition to the defaults)
+'''
+include = '\.pyi?$'
+line-length = 100
+skip-string-normalization = true
+target-version = ['py314']
+
+[tool.setuptools.packages.find]
+include = ["schema_first*"]
+where = ["src"]
+
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    env_list =
+        py312
+        py311
+        py310
+        py39
+    [testenv]
+    extras = dev
+    commands = pytest -s -x --cov-report term-missing:skip-covered --cov=../src/flask_first tests/
+"""
