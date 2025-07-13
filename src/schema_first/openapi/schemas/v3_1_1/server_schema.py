@@ -11,7 +11,9 @@ class ServerSchema(BaseSchema):
     url = fields.String(
         required=True, validate=[validate.Regexp(RE_SERVER_URL), validate.Length(min=1)]
     )
+
     description = DESCRIPTION_FIELD
+
     variables = fields.Dict(
         keys=fields.String(), values=fields.Nested(ServerVariableObjectSchema, required=True)
     )

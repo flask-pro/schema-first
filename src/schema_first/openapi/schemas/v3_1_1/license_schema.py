@@ -6,6 +6,7 @@ from schema_first.openapi.schemas._base import BaseSchema
 
 class LicenseSchema(BaseSchema):
     name = fields.String(required=True)
+
     identifier = fields.String()
     url = fields.URL()
 

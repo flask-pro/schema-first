@@ -13,11 +13,13 @@ from .server_schema import ServerSchema
 class RootSchema(BaseSchema):
     openapi = fields.String(required=True, validate=validate.Equal(OPENAPI_VERSION))
     info = fields.Nested(InfoSchema, required=True)
-    jsonSchemaDialect = fields.URL()
-    servers = fields.Nested(ServerSchema, many=True)
     paths = fields.Dict(
         required=True,
         keys=ENDPOINT_FIELD,
         values=fields.Nested(PathItemObjectSchema, required=True),
     )
+
+    jsonSchemaDialect = fields.URL()
+
+    servers = fields.Nested(ServerSchema, many=True)
     components = fields.Nested(ComponentsObjectSchema)

@@ -10,7 +10,6 @@ from .license_schema import LicenseSchema
 
 
 class InfoSchema(BaseSchema):
-
     title = fields.String(required=True)
     version = fields.String(required=True, validate=validate.Regexp(RE_VERSION))
 

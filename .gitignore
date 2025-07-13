@@ -31,6 +31,7 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 .pytest_cache/
 cover/
+.coverage
 
 # IPython
 profile_default/
