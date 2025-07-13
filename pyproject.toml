@@ -12,26 +12,26 @@ classifiers = [
   "Programming Language :: Python :: 3"
 ]
 dependencies = [
-  'PyYAML>=6.0.1',
-  'marshmallow>=3.14.1'
+  'marshmallow>=4.0.0',
+  'PyYAML>=6.0.2'
 ]
-description = "Validate and convert OpenAPI specification via Marshmallow schemas."
+description = "OpenAPI specification validator and converter to Marshmallow schemas."
 license = {file = "LICENSE"}
 name = "Schema-First"
 readme = "README.md"
 requires-python = ">=3.14"
-version = "0.1.0"
+version = "0.2.0"
 
 [project.optional-dependencies]
 dev = [
-  "bandit==1.7.9",
+  "bandit==1.8.6",
   "build==1.2.1",
   'openapi-spec-validator>=0.5.0',
-  "pre-commit==3.8.0",
-  "pytest==8.3.2",
-  "pytest-cov==5.0.0",
-  "python-dotenv==1.0.1",
-  "twine==5.1.1"
+  "pre-commit==4.2.0",
+  "pytest==8.4.1",
+  "pytest-cov==6.2.1",
+  "python-dotenv==1.1.1",
+  "twine==6.1.0"
 ]
 
 [project.urls]
@@ -47,21 +47,8 @@ extend-exclude = '''
 include = '\.pyi?$'
 line-length = 100
 skip-string-normalization = true
-target-version = ['py314']
+target-version = ['py313']
 
 [tool.setuptools.packages.find]
 include = ["schema_first*"]
 where = ["src"]
-
-[tool.tox]
-legacy_tox_ini = """
-    [tox]
-    env_list =
-        py312
-        py311
-        py310
-        py39
-    [testenv]
-    extras = dev
-    commands = pytest -s -x --cov-report term-missing:skip-covered --cov=../src/flask_first tests/
-"""

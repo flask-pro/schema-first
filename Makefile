@@ -23,17 +23,19 @@ format: venv
 test: venv
 	# Run pytest.
 	./venv/bin/bandit -q -r src/
-./venv/bin/pytest -s -x --cov-report term-missing:skip-covered --cov=$(SRC_DIR) tests/
+	./venv/bin/pytest -s -x --cov-report term-missing:skip-covered --cov=$(SRC_DIR) tests/
 
 clean:
+	rm -rf venv/
 	rm -rf dist/
 	rm -rf src/Schema_First.egg-info
 
 build: clean venv
 	$(PYTHON_VENV) -m build
 
-install: build
+install: clean venv build
 	$(PIP) install dist/$(PKG_NAME)-*.tar.gz
+	pre-commit install
 
 upload_to_testpypi: build
 	$(PYTHON_VENV) -m twine upload --repository testpypi dist/*
