@@ -1,7 +1,8 @@
 from marshmallow import fields
 from marshmallow import validates_schema
 from marshmallow import ValidationError
-from schema_first.openapi.schemas._base import BaseSchema
+
+from ..base import BaseSchema
 
 
 class LicenseSchema(BaseSchema):

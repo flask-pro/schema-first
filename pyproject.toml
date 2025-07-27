@@ -20,7 +20,7 @@ license = {file = "LICENSE"}
 name = "Schema-First"
 readme = "README.md"
 requires-python = ">=3.14"
-version = "0.2.0"
+version = "0.3.0"
 
 [project.optional-dependencies]
 dev = [
@@ -48,6 +48,14 @@ include = '\.pyi?$'
 line-length = 100
 skip-string-normalization = true
 target-version = ['py313']
+
+[tool.isort]
+profile = "google"
+src_paths = ["src", "tests"]
+
+[tool.pycln]
+all = true
+silence = true
 
 [tool.setuptools.packages.find]
 include = ["schema_first*"]

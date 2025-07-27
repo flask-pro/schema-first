@@ -1,5 +1,6 @@
-import pytest
 from marshmallow.exceptions import ValidationError
+import pytest
+
 from schema_first.openapi.schemas.v3_1_1.license_schema import LicenseSchema
 
 

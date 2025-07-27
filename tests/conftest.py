@@ -1,9 +1,9 @@
 from pathlib import Path
 
-import pytest
-import yaml
 from openapi_spec_validator import validate as osv_validate
 from openapi_spec_validator.readers import read_from_filename
+import pytest
+import yaml
 
 pytest_plugins = (
     'tests.schemas.info_object.conftest',

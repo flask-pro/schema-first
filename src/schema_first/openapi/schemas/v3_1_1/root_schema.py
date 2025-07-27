@@ -1,9 +1,9 @@
 from marshmallow import fields
 from marshmallow import validate
-from schema_first.openapi.schemas._base import BaseSchema
-from schema_first.openapi.schemas._constants import OPENAPI_VERSION
-from schema_first.openapi.schemas._fields import ENDPOINT_FIELD
 
+from ..base import BaseSchema
+from ..constants import OPENAPI_VERSION
+from ..fields import ENDPOINT_FIELD
 from .components_object_schema import ComponentsObjectSchema
 from .info_schema import InfoSchema
 from .path_item_object_schema import PathItemObjectSchema

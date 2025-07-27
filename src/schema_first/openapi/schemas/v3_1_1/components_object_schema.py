@@ -1,6 +1,6 @@
 from marshmallow import fields
-from schema_first.openapi.schemas._base import BaseSchema
 
+from ..base import BaseSchema
 from .responses_object_schema import ResponsesObjectSchema
 from .schema_object_schema import SchemaObjectSchema
 
