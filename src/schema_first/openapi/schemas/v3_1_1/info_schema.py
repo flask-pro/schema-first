@@ -1,10 +1,10 @@
 from marshmallow import fields
 from marshmallow import validate
-from schema_first.openapi.schemas._base import BaseSchema
-from schema_first.openapi.schemas._constants import RE_VERSION
-from schema_first.openapi.schemas._fields import DESCRIPTION_FIELD
-from schema_first.openapi.schemas._fields import SUMMARY_FIELD
 
+from ..base import BaseSchema
+from ..constants import RE_VERSION
+from ..fields import DESCRIPTION_FIELD
+from ..fields import SUMMARY_FIELD
 from .contact_schema import ContactSchema
 from .license_schema import LicenseSchema
 

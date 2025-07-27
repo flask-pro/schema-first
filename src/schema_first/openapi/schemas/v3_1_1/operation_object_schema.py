@@ -1,7 +1,7 @@
 from marshmallow import fields
-from schema_first.openapi.schemas._base import BaseSchema
-from schema_first.openapi.schemas._fields import HTTP_CODE_FIELD
 
+from ..base import BaseSchema
+from ..fields import HTTP_CODE_FIELD
 from .request_body_object_schema import RequestBodyObject
 from .responses_object_schema import ResponsesObjectSchema
 

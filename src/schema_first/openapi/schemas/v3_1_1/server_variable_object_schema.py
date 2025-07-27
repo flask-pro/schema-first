@@ -1,7 +1,8 @@
 from marshmallow import fields
 from marshmallow import validate
-from schema_first.openapi.schemas._base import BaseSchema
-from schema_first.openapi.schemas._fields import DESCRIPTION_FIELD
+
+from ..base import BaseSchema
+from ..fields import DESCRIPTION_FIELD
 
 
 class ServerVariableObjectSchema(BaseSchema):
