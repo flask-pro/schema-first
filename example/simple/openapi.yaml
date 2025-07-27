@@ -1,0 +1,18 @@
+openapi: 3.1.1
+info:
+  title: Example API for testing Flask-First
+  version: 1.0.1
+paths:
+  /endpoint:
+    get:
+      operationId: endpoint
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                type: object
+          description: OK
