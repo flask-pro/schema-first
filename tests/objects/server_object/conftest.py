@@ -2,14 +2,14 @@ import pytest
 
 
 @pytest.fixture
-def fx_server_object_minimal() -> dict:
+def fx_server_object_required() -> dict:
     return {'url': 'https://{username}.gigantic-server.com:{port}/{basePath}'}
 
 
 @pytest.fixture
-def fx_server_object_full(fx_server_object_minimal) -> dict:
+def fx_server_object_full(fx_server_object_required) -> dict:
     return {
-        **fx_server_object_minimal,
+        **fx_server_object_required,
         'description': 'The production API server',
         'variables': {
             'username': {

@@ -1,4 +1,5 @@
 from pathlib import Path
+from pprint import pformat
 
 from marshmallow import ValidationError
 
@@ -16,4 +17,4 @@ class OpenAPI:
         try:
             return RootSchema().load(self.raw_spec)
         except ValidationError as e:
-            raise OpenAPIValidationError(e)
+            raise OpenAPIValidationError(f'\n{pformat(e.messages)}')

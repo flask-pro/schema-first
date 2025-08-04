@@ -6,33 +6,28 @@ import pytest
 import yaml
 
 pytest_plugins = (
-    'tests.schemas.info_object.conftest',
-    'tests.schemas.contact_object.conftest',
-    'tests.schemas.license_object.conftest',
-    'tests.schemas.server_object.conftest',
+    'tests.objects.info_object.conftest',
+    'tests.objects.contact_object.conftest',
+    'tests.objects.license_object.conftest',
+    'tests.objects.schema_object.conftest',
+    'tests.objects.schema_object.string_field.conftest',
+    'tests.objects.server_object.conftest',
 )
 
 
 @pytest.fixture
-def fx_spec_minimal(fx_info_object_minimal):
+def fx_spec_required(fx_info_object_required, fx_schema_object__required):
     payload = {
         'openapi': '3.1.1',
-        'info': fx_info_object_minimal,
+        'info': fx_info_object_required,
         'paths': {
             '/endpoint': {
                 'get': {
-                    'operationId': 'endpoint',
+                    'operationId': 'endpoint-get',
                     'responses': {
                         '200': {
                             'description': 'OK',
-                            'content': {
-                                'application/json': {
-                                    'schema': {
-                                        'type': 'object',
-                                        'properties': {'message': {'type': 'string'}},
-                                    }
-                                }
-                            },
+                            'content': {'application/json': {'schema': fx_schema_object__required}},
                         }
                     },
                 }
@@ -43,7 +38,7 @@ def fx_spec_minimal(fx_info_object_minimal):
 
 
 @pytest.fixture
-def fx_spec_full(fx_info_object_full, fx_server_object_full):
+def fx_spec_full(fx_info_object_full, fx_server_object_full, fx_schema_object__full):
     payload = {
         'openapi': '3.1.1',
         'info': fx_info_object_full,
@@ -52,18 +47,11 @@ def fx_spec_full(fx_info_object_full, fx_server_object_full):
         'paths': {
             '/endpoint': {
                 'get': {
-                    'operationId': 'endpoint',
+                    'operationId': 'endpoint-get',
                     'responses': {
                         '200': {
                             'description': 'OK',
-                            'content': {
-                                'application/json': {
-                                    'schema': {
-                                        'type': 'object',
-                                        'properties': {'message': {'type': 'string'}},
-                                    }
-                                }
-                            },
+                            'content': {'application/json': {'schema': fx_schema_object__full}},
                         }
                     },
                 }
