@@ -17,5 +17,5 @@ from schema_first.openapi.schemas.v3_1_1.schema_object_schema import SchemaObjec
         (SchemaObjectSchema, 'fx_field_string__uuid'),
     ],
 )
-def test_string_field__email(request, schema, fixture):
+def test_string_field(request, schema, fixture):
     schema().load(request.getfixturevalue(fixture))
