@@ -1,8 +1,6 @@
 import re
 
 from marshmallow import fields
-from marshmallow import RAISE
-from marshmallow import Schema
 from marshmallow import validate
 from marshmallow import validates
 from marshmallow import validates_schema
@@ -14,66 +12,39 @@ from ..constants import TYPES
 from ..fields import DESCRIPTION_FIELD
 
 
-class FormatBinarySchema(Schema):
-    class Meta:
-        unknown = RAISE
-
+class FormatBinarySchema(BaseSchema):
     default = fields.String()
 
 
-class FormatEmailSchema(Schema):
-    class Meta:
-        unknown = RAISE
-
+class FormatEmailSchema(BaseSchema):
     default = fields.Email()
 
 
-class FormatDateSchema(Schema):
-    class Meta:
-        unknown = RAISE
-
+class FormatDateSchema(BaseSchema):
     default = fields.Date()
 
 
-class FormatDateTimeSchema(Schema):
-    class Meta:
-        unknown = RAISE
-
+class FormatDateTimeSchema(BaseSchema):
     default = fields.AwareDateTime(format='iso', default_timezone=None)
 
 
-class FormatIPv4Schema(Schema):
-    class Meta:
-        unknown = RAISE
-
+class FormatIPv4Schema(BaseSchema):
     default = fields.IPv4()
 
 
-class FormatIPv6Schema(Schema):
-    class Meta:
-        unknown = RAISE
-
+class FormatIPv6Schema(BaseSchema):
     default = fields.IPv6()
 
 
-class FormatTimeSchema(Schema):
-    class Meta:
-        unknown = RAISE
-
+class FormatTimeSchema(BaseSchema):
     default = fields.Time(format='iso')
 
 
-class FormatURISchema(Schema):
-    class Meta:
-        unknown = RAISE
-
+class FormatURISchema(BaseSchema):
     default = fields.URL()
 
 
-class FormatUUIDSchema(Schema):
-    class Meta:
-        unknown = RAISE
-
+class FormatUUIDSchema(BaseSchema):
     default = fields.UUID()
 
 
