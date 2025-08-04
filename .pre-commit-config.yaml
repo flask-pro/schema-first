@@ -33,11 +33,6 @@ repos:
   rev: 6.0.1
   hooks:
   - id: isort
-- repo: https://github.com/hadialqattan/pycln
-  rev: v2.5.0
-  hooks:
-  - id: pycln
-    args: [--config=pyproject.toml]
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
   hooks:

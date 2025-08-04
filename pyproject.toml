@@ -53,10 +53,6 @@ target-version = ['py313']
 profile = "google"
 src_paths = ["src", "tests"]
 
-[tool.pycln]
-all = true
-silence = true
-
 [tool.setuptools.packages.find]
 include = ["schema_first*"]
 where = ["src"]

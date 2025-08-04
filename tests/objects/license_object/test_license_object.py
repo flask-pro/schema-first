@@ -4,8 +4,8 @@ import pytest
 from schema_first.openapi.schemas.v3_1_1.license_schema import LicenseSchema
 
 
-def test_server_schema_minimal(fx_license_object_minimal):
-    LicenseSchema().load(fx_license_object_minimal)
+def test_server_schema_required(fx_license_object_required):
+    LicenseSchema().load(fx_license_object_required)
 
 
 def test_server_schema_full(fx_license_object_full):

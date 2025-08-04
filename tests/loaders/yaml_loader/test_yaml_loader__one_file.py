@@ -7,31 +7,31 @@ from src.schema_first.loaders.exc import YAMLReaderError
 from src.schema_first.loaders.yaml_loader import load_from_yaml
 
 
-def test_loaders__yaml(fx_spec_minimal, fx_spec_as_file):
-    spec_file = fx_spec_as_file(fx_spec_minimal)
+def test_loaders__yaml(fx_spec_required, fx_spec_as_file):
+    spec_file = fx_spec_as_file(fx_spec_required)
     spec_obj = load_from_yaml(spec_file)
 
-    assert fx_spec_minimal == spec_obj
+    assert fx_spec_required == spec_obj
 
 
-def test_loaders__yaml__response_ref(fx_spec_minimal, fx_spec_as_file):
+def test_loaders__yaml__response_ref(fx_spec_required, fx_spec_as_file):
     responses_200_ref = {'$ref': '#/components/responses/ItemResponse'}
     responses_schema = {
         'description': 'Response item.',
         'content': {'application/json': {'schema': {'type': 'string'}}},
     }
 
-    fx_spec_minimal['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
-    fx_spec_minimal['components'] = {'responses': {'ItemResponse': responses_schema}}
+    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['components'] = {'responses': {'ItemResponse': responses_schema}}
 
-    spec_file = fx_spec_as_file(fx_spec_minimal)
+    spec_file = fx_spec_as_file(fx_spec_required)
     spec_obj = load_from_yaml(spec_file)
 
     assert spec_obj['paths']['/endpoint']['get']['responses']['200'].get('$ref') is None
     assert spec_obj['paths']['/endpoint']['get']['responses']['200'] == responses_schema
 
 
-def test_loaders_yaml__response_nested_ref(fx_spec_minimal, fx_spec_as_file):
+def test_loaders_yaml__response_nested_ref(fx_spec_required, fx_spec_as_file):
     responses_200_ref = {'$ref': '#/components/responses/ItemResponse'}
     responses_schema = {
         'description': 'Response item.',
@@ -39,11 +39,11 @@ def test_loaders_yaml__response_nested_ref(fx_spec_minimal, fx_spec_as_file):
     }
     field_schema = {'type': 'string'}
 
-    fx_spec_minimal['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
-    fx_spec_minimal['components'] = {'responses': {'ItemResponse': responses_schema}}
-    fx_spec_minimal['components'].update({'schemas': {'FieldSchema': field_schema}})
+    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['components'] = {'responses': {'ItemResponse': responses_schema}}
+    fx_spec_required['components'].update({'schemas': {'FieldSchema': field_schema}})
 
-    spec_file = fx_spec_as_file(fx_spec_minimal)
+    spec_file = fx_spec_as_file(fx_spec_required)
     spec_obj = load_from_yaml(spec_file)
 
     assert spec_obj['paths']['/endpoint']['get']['responses']['200'].get('$ref') is None
@@ -59,7 +59,7 @@ def test_loaders_yaml__response_nested_ref(fx_spec_minimal, fx_spec_as_file):
     assert spec_obj['paths']['/endpoint']['get']['responses']['200'] == resolved_hierarchy_schema
 
 
-def test_loaders__yaml__parameters_ref(fx_spec_minimal, fx_spec_as_file):
+def test_loaders__yaml__parameters_ref(fx_spec_required, fx_spec_as_file):
     param_ref = [{'$ref': '#/components/parameters/QueryParam'}]
     param_schema = {
         'name': 'id',
@@ -67,11 +67,11 @@ def test_loaders__yaml__parameters_ref(fx_spec_minimal, fx_spec_as_file):
         'schema': {'type': 'array', 'items': {'type': 'string'}},
     }
 
-    fx_spec_minimal['paths']['/endpoint']['parameters'] = param_ref
-    fx_spec_minimal['paths']['/endpoint']['get']['parameters'] = param_ref
-    fx_spec_minimal['components'] = {'parameters': {'QueryParam': param_schema}}
+    fx_spec_required['paths']['/endpoint']['parameters'] = param_ref
+    fx_spec_required['paths']['/endpoint']['get']['parameters'] = param_ref
+    fx_spec_required['components'] = {'parameters': {'QueryParam': param_schema}}
 
-    spec_file = fx_spec_as_file(fx_spec_minimal)
+    spec_file = fx_spec_as_file(fx_spec_required)
     spec_obj = load_from_yaml(spec_file)
 
     assert spec_obj['paths']['/endpoint']['parameters'][0].get('$ref') is None
@@ -79,12 +79,12 @@ def test_loaders__yaml__parameters_ref(fx_spec_minimal, fx_spec_as_file):
     assert spec_obj['paths']['/endpoint']['get']['parameters'][0] == param_schema
 
 
-def test_loader__internal__unknown_ref(fx_spec_minimal, fx_spec_as_file):
+def test_loader__internal__unknown_ref(fx_spec_required, fx_spec_as_file):
     responses_200_ref = {'$ref': '#/components/schemas/NonExistentScheme'}
 
-    fx_spec_minimal['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
 
-    spec_file = fx_spec_as_file(fx_spec_minimal)
+    spec_file = fx_spec_as_file(fx_spec_required)
 
     with pytest.raises(ResolverError) as e:
         load_from_yaml(spec_file)
@@ -93,11 +93,11 @@ def test_loader__internal__unknown_ref(fx_spec_minimal, fx_spec_as_file):
 
 
 @pytest.mark.parametrize('bad_ref', [None, ''])
-def test_loader__internal__resolver__bad_ref(fx_spec_minimal, fx_spec_as_file, bad_ref):
+def test_loader__internal__resolver__bad_ref(fx_spec_required, fx_spec_as_file, bad_ref):
     responses_200_ref = {'$ref': bad_ref}
-    fx_spec_minimal['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
 
-    spec_file = fx_spec_as_file(fx_spec_minimal)
+    spec_file = fx_spec_as_file(fx_spec_required)
 
     with pytest.raises(ResolverError) as e:
         load_from_yaml(spec_file)
@@ -106,11 +106,11 @@ def test_loader__internal__resolver__bad_ref(fx_spec_minimal, fx_spec_as_file, b
 
 
 @pytest.mark.parametrize('bad_ref', [1, '#', '/'])
-def test_loader__internal__reader__bad_ref(fx_spec_minimal, fx_spec_as_file, bad_ref):
+def test_loader__internal__reader__bad_ref(fx_spec_required, fx_spec_as_file, bad_ref):
     responses_200_ref = {'$ref': bad_ref}
-    fx_spec_minimal['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
 
-    spec_file = fx_spec_as_file(fx_spec_minimal)
+    spec_file = fx_spec_as_file(fx_spec_required)
 
     with pytest.raises(YAMLReaderError) as e:
         load_from_yaml(spec_file)
