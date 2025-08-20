@@ -1,6 +1,9 @@
+from collections.abc import Mapping, Sequence
 import re
+import typing
 
 from marshmallow import fields
+from marshmallow import types
 from marshmallow import validate
 from marshmallow import validates
 from marshmallow import validates_schema
@@ -10,6 +13,12 @@ from ..base import BaseSchema
 from ..constants import FORMATS
 from ..constants import TYPES
 from ..fields import DESCRIPTION_FIELD
+
+
+class BaseSchemaField(BaseSchema):
+    type = fields.String(required=True, validate=validate.OneOf(TYPES))
+    description = DESCRIPTION_FIELD
+    nullable = fields.Boolean()
 
 
 class FormatBinarySchema(BaseSchema):
@@ -61,11 +70,12 @@ format_schemas = {
 }
 
 
-class StringFieldSchema(BaseSchema):
+class StringFieldSchema(BaseSchemaField):
     format = fields.String(validate=validate.OneOf(FORMATS))
     minLength = fields.Integer(validate=[validate.Range(min=0)])
     maxLength = fields.Integer(validate=[validate.Range(min=0)])
     pattern = fields.String()
+    default = fields.String()
 
     @validates('pattern')
     def validate_pattern(self, value: str, data_key: str) -> None:
@@ -93,15 +103,11 @@ class StringFieldSchema(BaseSchema):
         if 'minLength' in data and 'maxLength' in data:
             if data['minLength'] > data['maxLength']:
                 raise ValidationError(
-                    f'<{data['minLength']}> cannot be greater than <{data['maxLength']}>'
+                    f'<{data["minLength"]}> cannot be greater than <{data["maxLength"]}>'
                 )
 
 
-class SchemaObjectSchema(StringFieldSchema):
-    type = fields.String(required=True, validate=validate.OneOf(TYPES))
-    default = fields.String()
-    description = DESCRIPTION_FIELD
-    nullable = fields.Boolean()
+class ObjectFieldSchema(BaseSchemaField):
     required = fields.List(fields.String())
     additionalProperties = fields.Boolean()
 
@@ -118,3 +124,39 @@ class SchemaObjectSchema(StringFieldSchema):
                     raise ValidationError(
                         f'Required field <{field_name}> not in <data["properties"]>'
                     )
+
+
+class BooleanFieldSchema(BaseSchemaField):
+    default = fields.Boolean(truthy=[True], falsy=[False])
+
+    @validates_schema
+    def validate_default(self, data, **kwargs):
+        if 'default' in data:
+            if not isinstance(data['default'], bool):
+                raise ValidationError(f'<{data["default"]}> is not boolean.')
+
+
+field_schemas = {
+    'boolean': BooleanFieldSchema,
+    'object': ObjectFieldSchema,
+    'string': StringFieldSchema,
+}
+
+
+class SchemaObjectSchema(BaseSchema):
+    type = fields.String(required=True, validate=validate.OneOf(TYPES))
+
+    def load(
+        self,
+        data: Mapping[str, typing.Any] | Sequence[Mapping[str, typing.Any]],
+        *,
+        many: bool | None = None,
+        partial: bool | types.StrSequenceOrSet | None = None,
+        unknown: types.UnknownOption | None = None,
+    ):
+        try:
+            return field_schemas[data['type']]().load(
+                data, many=many, partial=partial, unknown=unknown
+            )
+        except KeyError:
+            raise ValidationError(f'Data type <{data["type"]}> not supported.')

@@ -71,11 +71,32 @@ class Specification:
         initialized_schema.required = required
         return initialized_schema
 
-    def _convert_field_any_type(self, field_schema: dict, required: bool = False) -> dict:
-        if field_schema['type'] == 'string':
-            converted_field_schema = self._convert_string_field(field_schema, required=required)
-        else:
-            raise NotImplementedError(field_schema)
+    def _convert_boolean_field(self, field_schema: dict, required: bool = False):
+        try:
+            schema = FIELDS_VIA_TYPES[field_schema['type']]
+        except KeyError:
+            raise NotImplementedError(
+                f'Schema <{field_schema}> for type <{field_schema["type"]}> not implemented.'
+            )
+
+        initialized_schema = schema()
+        initialized_schema.allow_none = field_schema.get('nullable', False)
+        initialized_schema.required = required
+        return initialized_schema
+
+    def _convert_field_any_type(self, field_schema: dict, required: bool = False):
+        field_schema_converters = {
+            'string': self._convert_string_field,
+            'boolean': self._convert_boolean_field,
+        }
+        try:
+            converted_field_schema = field_schema_converters[field_schema['type']](
+                field_schema, required=required
+            )
+        except KeyError:
+            raise NotImplementedError(
+                f'Schema <{field_schema}> for type <{field_schema["type"]}> not be converted.'
+            )
 
         return converted_field_schema
 
