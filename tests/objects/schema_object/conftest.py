@@ -22,6 +22,7 @@ def fx_schema_object__full(
     fx_field_string__time,
     fx_field_string__uri,
     fx_field_string__uuid,
+    fx_field_boolean__full,
 ) -> dict:
     return {
         **fx_schema_object__required,
@@ -39,5 +40,6 @@ def fx_schema_object__full(
             'time': fx_field_string__time,
             'uri': fx_field_string__uri,
             'uuid': fx_field_string__uuid,
+            'boolean': fx_field_boolean__full,
         },
     }

@@ -4,18 +4,18 @@ from schema_first.openapi.schemas.v3_1_1.schema_object_schema import SchemaObjec
 
 
 @pytest.mark.parametrize(
-    'schema, fixture',
+    'fixture',
     [
-        (SchemaObjectSchema, 'fx_field_string__binary'),
-        (SchemaObjectSchema, 'fx_field_string__date'),
-        (SchemaObjectSchema, 'fx_field_string__date_time'),
-        (SchemaObjectSchema, 'fx_field_string__email'),
-        (SchemaObjectSchema, 'fx_field_string__ipv4'),
-        (SchemaObjectSchema, 'fx_field_string__ipv6'),
-        (SchemaObjectSchema, 'fx_field_string__time'),
-        (SchemaObjectSchema, 'fx_field_string__uri'),
-        (SchemaObjectSchema, 'fx_field_string__uuid'),
+        'fx_field_string__binary',
+        'fx_field_string__date',
+        'fx_field_string__date_time',
+        'fx_field_string__email',
+        'fx_field_string__ipv4',
+        'fx_field_string__ipv6',
+        'fx_field_string__time',
+        'fx_field_string__uri',
+        'fx_field_string__uuid',
     ],
 )
-def test_string_field(request, schema, fixture):
-    schema().load(request.getfixturevalue(fixture))
+def test_string_field(request, fixture):
+    SchemaObjectSchema().load(request.getfixturevalue(fixture))

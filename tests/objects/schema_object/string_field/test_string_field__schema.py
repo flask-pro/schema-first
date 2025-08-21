@@ -4,12 +4,9 @@ import pytest
 from schema_first.openapi.schemas.v3_1_1.schema_object_schema import SchemaObjectSchema
 
 
-def test_string_field__required(fx_field_string__required):
-    SchemaObjectSchema().load(fx_field_string__required)
-
-
-def test_string_field__full(fx_field_string__full):
-    SchemaObjectSchema().load(fx_field_string__full)
+@pytest.mark.parametrize('fixture', ['fx_field_string__required', 'fx_field_string__full'])
+def test_boolean_field(request, fixture):
+    SchemaObjectSchema().load(request.getfixturevalue(fixture))
 
 
 def test_string_field__pattern(fx_field_string__required):

@@ -1,3 +1,7 @@
+## Version 0.5.0
+
+* Add schema for boolean type field.
+
 ## Version 0.4.0
 
 * Add schema for string type field.
