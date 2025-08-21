@@ -1,5 +1,5 @@
 VENV_DIR = venv
-PYTHON = python3.14
+PYTHON = python3.13
 PIP = $(VENV_DIR)/bin/pip
 PYTHON_VENV = $(VENV_DIR)/bin/python
 PRE_COMMIT = $(VENV_DIR)/bin/pre-commit
