@@ -180,11 +180,21 @@ class NumberFieldSchema(BaseSchemaField):
                 raise ValidationError(f'<{minimum}> cannot be greater than <{maximum}>')
 
 
+class IntegerFieldSchema(NumberFieldSchema):
+    minimum = fields.Integer()
+    maximum = fields.Integer()
+    exclusiveMinimum = fields.Integer()
+    exclusiveMaximum = fields.Integer()
+    multipleOf = fields.Integer(validate=[validate.Range(min=0, min_inclusive=False)])
+    default = fields.Integer()
+
+
 field_schemas = {
     'boolean': BooleanFieldSchema,
     'object': ObjectFieldSchema,
     'string': StringFieldSchema,
     'number': NumberFieldSchema,
+    'integer': IntegerFieldSchema,
 }
 
 

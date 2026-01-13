@@ -103,6 +103,7 @@ class Specification:
             'string': self._convert_string_field,
             'boolean': self._convert_boolean_field,
             'number': self._convert_number_field,
+            'integer': self._convert_number_field,
         }
         try:
             converted_field_schema = field_schema_converters[field_schema['type']](
