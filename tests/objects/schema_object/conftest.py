@@ -23,6 +23,8 @@ def fx_schema_object__full(
     fx_field_string__uri,
     fx_field_string__uuid,
     fx_field_boolean__full,
+    fx_field_number__full,
+    fx_field_integer__full,
 ) -> dict:
     return {
         **fx_schema_object__required,
@@ -41,5 +43,7 @@ def fx_schema_object__full(
             'uri': fx_field_string__uri,
             'uuid': fx_field_string__uuid,
             'boolean': fx_field_boolean__full,
+            'number': fx_field_number__full,
+            'integer': fx_field_integer__full,
         },
     }

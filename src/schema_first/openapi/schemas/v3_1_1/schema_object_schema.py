@@ -1,4 +1,5 @@
 from collections.abc import Mapping, Sequence
+import math
 import re
 import typing
 
@@ -136,10 +137,64 @@ class BooleanFieldSchema(BaseSchemaField):
                 raise ValidationError(f'<{data["default"]}> is not boolean.')
 
 
+class NumberFieldSchema(BaseSchemaField):
+    minimum = fields.Float()
+    maximum = fields.Float()
+    exclusiveMinimum = fields.Float()
+    exclusiveMaximum = fields.Float()
+    multipleOf = fields.Float(validate=[validate.Range(min=0, min_inclusive=False)])
+    default = fields.Float()
+
+    @validates_schema
+    def validate_default(self, data, **kwargs):
+        if 'default' in data:
+            default = data['default']
+
+            minimum = data.get('minimum', -math.inf)
+            maximum = data.get('maximum', math.inf)
+            if not minimum <= default <= maximum:
+                raise ValidationError(
+                    f'Value <{default}> must be greater than or equal to <{minimum}>'
+                    f' and less than or equal to <{maximum}>.'
+                )
+
+            exclusive_minimum = data.get('exclusiveMinimum', -math.inf)
+            exclusive_maximum = data.get('exclusiveMaximum', math.inf)
+            if not exclusive_minimum < default < exclusive_maximum:
+                raise ValidationError(
+                    f'Value <{default}> must be greater to <{minimum}> and less to <{maximum}>.'
+                )
+
+    @validates_schema
+    def validate_min_max(self, data, **kwargs):
+        if 'exclusiveMinimum' in data and 'exclusiveMaximum' in data:
+            exclusive_min = data['exclusiveMinimum']
+            exclusive_max = data['exclusiveMaximum']
+            if exclusive_min > exclusive_max:
+                raise ValidationError(f'<{exclusive_min}> cannot be greater than <{exclusive_max}>')
+
+        if 'minimum' in data and 'maximum' in data:
+            minimum = data['minimum']
+            maximum = data['maximum']
+            if minimum > maximum:
+                raise ValidationError(f'<{minimum}> cannot be greater than <{maximum}>')
+
+
+class IntegerFieldSchema(NumberFieldSchema):
+    minimum = fields.Integer()
+    maximum = fields.Integer()
+    exclusiveMinimum = fields.Integer()
+    exclusiveMaximum = fields.Integer()
+    multipleOf = fields.Integer(validate=[validate.Range(min=0, min_inclusive=False)])
+    default = fields.Integer()
+
+
 field_schemas = {
     'boolean': BooleanFieldSchema,
     'object': ObjectFieldSchema,
     'string': StringFieldSchema,
+    'number': NumberFieldSchema,
+    'integer': IntegerFieldSchema,
 }
 
 

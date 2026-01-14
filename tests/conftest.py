@@ -12,6 +12,8 @@ pytest_plugins = (
     'tests.objects.schema_object.conftest',
     'tests.objects.schema_object.string_field.conftest',
     'tests.objects.schema_object.boolean_field.conftest',
+    'tests.objects.schema_object.number_field.conftest',
+    'tests.objects.schema_object.integer_field.conftest',
     'tests.objects.server_object.conftest',
 )
 
