@@ -1,6 +1,6 @@
 ## Version 0.6.0
 
-* Add schema for number type field.
+* Add schema for number and integer type field.
 
 ## Version 0.5.0
 
