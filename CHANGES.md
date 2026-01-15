@@ -1,3 +1,7 @@
+## Version 0.6.1
+
+* Add schema for summary and description fields.
+
 ## Version 0.6.0
 
 * Add schema for number and integer type field.
