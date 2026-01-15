@@ -28,6 +28,8 @@ def fx_schema_object__full(
 ) -> dict:
     return {
         **fx_schema_object__required,
+        'summary': 'Object schema',
+        'description': 'Example to object field.',
         'required': ['message'],
         'nullable': False,
         'additionalProperties': False,

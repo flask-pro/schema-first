@@ -3,6 +3,9 @@ from marshmallow import Schema
 from marshmallow import validates_schema
 from marshmallow import ValidationError
 
+from .fields import DESCRIPTION_FIELD
+from .fields import SUMMARY_FIELD
+
 
 class BaseSchema(Schema):
     class Meta:
@@ -18,3 +21,8 @@ class BaseSchema(Schema):
                     f"If there is a <'ref'> field, then only <{ALLOWED_FIELDS}>,"
                     f" but set <{ALL_FIELDS}>"
                 )
+
+
+class DocStringFields(Schema):
+    summary = SUMMARY_FIELD
+    description = DESCRIPTION_FIELD

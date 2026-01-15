@@ -11,14 +11,13 @@ from marshmallow import validates_schema
 from marshmallow import ValidationError
 
 from ..base import BaseSchema
+from ..base import DocStringFields
 from ..constants import FORMATS
 from ..constants import TYPES
-from ..fields import DESCRIPTION_FIELD
 
 
-class BaseSchemaField(BaseSchema):
+class BaseSchemaField(DocStringFields, BaseSchema):
     type = fields.String(required=True, validate=validate.OneOf(TYPES))
-    description = DESCRIPTION_FIELD
     nullable = fields.Boolean()
 
 
@@ -191,14 +190,14 @@ class IntegerFieldSchema(NumberFieldSchema):
 
 field_schemas = {
     'boolean': BooleanFieldSchema,
+    'integer': IntegerFieldSchema,
+    'number': NumberFieldSchema,
     'object': ObjectFieldSchema,
     'string': StringFieldSchema,
-    'number': NumberFieldSchema,
-    'integer': IntegerFieldSchema,
 }
 
 
-class SchemaObjectSchema(BaseSchema):
+class SchemaObjectSchema(BaseSchemaField):
     type = fields.String(required=True, validate=validate.OneOf(TYPES))
 
     def load(

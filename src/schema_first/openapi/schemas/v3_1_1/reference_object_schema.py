@@ -1,8 +1,7 @@
-from schema_first.openapi.schemas._base import BaseSchema
-from schema_first.openapi.schemas._fields import DESCRIPTION_FIELD
-from schema_first.openapi.schemas._fields import REF_FIELD
+from ..base import BaseSchema
+from ..base import DocStringFields
+from ..fields import REF_FIELD
 
 
-class ReferenceObjectSchema(BaseSchema):
-    description = DESCRIPTION_FIELD
+class ReferenceObjectSchema(DocStringFields, BaseSchema):
     ref = REF_FIELD
