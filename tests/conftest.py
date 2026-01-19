@@ -11,6 +11,7 @@ tests_dir_abspath = os.path.dirname(os.path.abspath(__file__))
 pytest_plugins = (
     'tests.objects.info_object.conftest',
     'tests.objects.contact_object.conftest',
+    'tests.objects.external_docs_object.conftest',
     'tests.objects.license_object.conftest',
     'tests.objects.schema_object.conftest',
     'tests.objects.schema_object.string_field.conftest',
@@ -44,7 +45,9 @@ def fx_spec_required(fx_info_object_required, fx_schema_object__required):
 
 
 @pytest.fixture
-def fx_spec_full(fx_info_object_full, fx_server_object_full, fx_schema_object__full):
+def fx_spec_full(
+    fx_info_object_full, fx_server_object_full, fx_schema_object__full, fx_external_docs_object_full
+):
     payload = {
         'openapi': '3.2.0',
         'info': fx_info_object_full,
@@ -63,6 +66,7 @@ def fx_spec_full(fx_info_object_full, fx_server_object_full, fx_schema_object__f
                 }
             }
         },
+        'externalDocs': fx_external_docs_object_full,
     }
     return payload
 

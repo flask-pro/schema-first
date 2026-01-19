@@ -23,3 +23,4 @@ class OpenAPIObjectSchema(BaseSchema):
 
     servers = fields.Nested(ServerSchema, many=True)
     components = fields.Nested(ComponentsObjectSchema)
+    externalDocs = fields.Nested(ServerSchema)
