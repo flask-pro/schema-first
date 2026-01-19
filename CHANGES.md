@@ -1,3 +1,10 @@
+## Version 0.7.0
+
+* Add schema for externalDocs object.
+* Fix Server object schema.
+* Fix Info object schema.
+* Fix OpenAPI object schema.
+
 ## Version 0.6.2
 
 * Add reference specifications.

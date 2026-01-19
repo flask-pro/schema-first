@@ -12,7 +12,7 @@ class InfoSchema(DocStringFields, BaseSchema):
     title = fields.String(required=True)
     version = fields.String(required=True, validate=validate.Regexp(RE_VERSION))
 
-    terms_of_service = fields.String(data_key='termsOfService')
+    termsOfService = fields.String()
 
     contact = fields.Nested(ContactSchema)
     license = fields.Nested(LicenseSchema)
