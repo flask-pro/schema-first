@@ -1,9 +1,12 @@
+import os
 from pathlib import Path
 
 from openapi_spec_validator import validate as osv_validate
 from openapi_spec_validator.readers import read_from_filename
 import pytest
 import yaml
+
+tests_dir_abspath = os.path.dirname(os.path.abspath(__file__))
 
 pytest_plugins = (
     'tests.objects.info_object.conftest',
@@ -21,7 +24,7 @@ pytest_plugins = (
 @pytest.fixture
 def fx_spec_required(fx_info_object_required, fx_schema_object__required):
     payload = {
-        'openapi': '3.1.1',
+        'openapi': '3.2.0',
         'info': fx_info_object_required,
         'paths': {
             '/endpoint': {
@@ -43,7 +46,7 @@ def fx_spec_required(fx_info_object_required, fx_schema_object__required):
 @pytest.fixture
 def fx_spec_full(fx_info_object_full, fx_server_object_full, fx_schema_object__full):
     payload = {
-        'openapi': '3.1.1',
+        'openapi': '3.2.0',
         'info': fx_info_object_full,
         'jsonSchemaDialect': 'https://json-schema.org/draft/2020-12/schema',
         'servers': [fx_server_object_full],

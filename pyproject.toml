@@ -20,13 +20,13 @@ license = {file = "LICENSE"}
 name = "Schema-First"
 readme = "README.md"
 requires-python = ">=3.13"
-version = "0.6.1"
+version = "0.6.2"
 
 [project.optional-dependencies]
 dev = [
-  "bandit>=1.9.2",
+  "bandit>=1.9.3",
   "build>=1.4.0",
-  'openapi-spec-validator>=0.5.0',
+  'openapi-spec-validator>=0.7.2',
   "pre-commit>=4.5.1",
   "pytest>=9.0.2",
   "pytest-cov>=7.0.0",
