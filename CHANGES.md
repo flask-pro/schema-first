@@ -1,3 +1,7 @@
+## Version 0.6.2
+
+* Add reference specifications.
+
 ## Version 0.6.1
 
 * Add schema for summary and description fields.

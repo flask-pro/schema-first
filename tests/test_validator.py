@@ -18,12 +18,14 @@ def test_validator__full(fx_spec_full, fx_spec_as_file):
     assert open_api_spec.raw_spec == fx_spec_full
 
 
+@pytest.mark.xfail(reason='External validator not support version 3.2.0.')
 def test_validator__required__external_validator(fx_spec_required, fx_spec_as_file):
     spec_file = fx_spec_as_file(fx_spec_required, external_validator=True)
     open_api_spec = OpenAPI(spec_file)
     open_api_spec.load()
 
 
+@pytest.mark.xfail(reason='External validator not support version 3.2.0.')
 def test_validator__full__external_validator(fx_spec_full, fx_spec_as_file):
     spec_file = fx_spec_as_file(fx_spec_full, external_validator=True)
     open_api_spec = OpenAPI(spec_file)
