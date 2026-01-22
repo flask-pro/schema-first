@@ -6,5 +6,5 @@ from .operation_object_schema import OperationObjectSchema
 
 
 class PathItemObjectSchema(DocStringFields, BaseSchema):
-    get = fields.Nested(OperationObjectSchema)
+    get = fields.Nested(OperationObjectSchema, metadata={'q': 1})
     post = fields.Nested(OperationObjectSchema)

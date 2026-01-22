@@ -9,5 +9,6 @@ from .responses_object_schema import ResponsesObjectSchema
 
 class OperationObjectSchema(DocStringFields, BaseSchema):
     operation_id = fields.String(data_key='operationId')
+    tags = fields.List(fields.String)
     requestBody = fields.Nested(RequestBodyObject)
     responses = fields.Dict(keys=HTTP_CODE_FIELD, values=fields.Nested(ResponsesObjectSchema))

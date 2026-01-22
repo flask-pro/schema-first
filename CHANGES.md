@@ -1,3 +1,7 @@
+## Version 0.7.1
+
+* Add schema for tags object.
+
 ## Version 0.7.0
 
 * Add schema for externalDocs object.
