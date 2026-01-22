@@ -19,6 +19,7 @@ pytest_plugins = (
     'tests.objects.schema_object.number_field.conftest',
     'tests.objects.schema_object.integer_field.conftest',
     'tests.objects.server_object.conftest',
+    'tests.objects.tag_object.conftest',
 )
 
 
@@ -46,7 +47,11 @@ def fx_spec_required(fx_info_object_required, fx_schema_object__required):
 
 @pytest.fixture
 def fx_spec_full(
-    fx_info_object_full, fx_server_object_full, fx_schema_object__full, fx_external_docs_object_full
+    fx_info_object_full,
+    fx_server_object_full,
+    fx_schema_object__full,
+    fx_external_docs_object_full,
+    fx_tag_object_full,
 ):
     payload = {
         'openapi': '3.2.0',
@@ -57,6 +62,7 @@ def fx_spec_full(
             '/endpoint': {
                 'get': {
                     'operationId': 'endpoint-get',
+                    'tags': ['test_endpoint'],
                     'responses': {
                         '200': {
                             'description': 'OK',
@@ -66,6 +72,7 @@ def fx_spec_full(
                 }
             }
         },
+        'tags': [fx_tag_object_full],
         'externalDocs': fx_external_docs_object_full,
     }
     return payload

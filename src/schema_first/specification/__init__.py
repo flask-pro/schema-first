@@ -50,8 +50,7 @@ class Specification:
         if schema['type'] in ['integer', 'number']:
             validators.append(validate.Range(min=schema.get('minimum'), max=schema.get('maximum')))
 
-        required_values = schema.get('enum')
-        if required_values:
+        if required_values := schema.get('enum'):
             validators.append(validate.OneOf(required_values))
 
         return validators
