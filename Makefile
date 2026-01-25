@@ -29,6 +29,7 @@ clean:
 	rm -rf venv/
 	rm -rf dist/
 	rm -rf src/Schema_First.egg-info
+	find . -type d -name __pycache__ -exec rm -r {} \+
 
 build: clean venv
 	$(PYTHON_VENV) -m build

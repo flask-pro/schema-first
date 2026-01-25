@@ -213,4 +213,4 @@ class SchemaObjectSchema(BaseSchemaField):
                 data, many=many, partial=partial, unknown=unknown
             )
         except KeyError:
-            raise ValidationError(f'Data type <{data["type"]}> not supported.')
+            raise ValidationError(f'Data type in <{data}> not exist.')
