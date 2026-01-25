@@ -1,3 +1,7 @@
+## Version 0.8.0
+
+* Add schema for example object.
+
 ## Version 0.7.1
 
 * Add schema for tags object.
