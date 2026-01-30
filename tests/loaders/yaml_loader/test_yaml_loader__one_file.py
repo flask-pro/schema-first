@@ -21,14 +21,14 @@ def test_loaders__yaml__response_ref(fx_spec_required, fx_spec_as_file):
         'content': {'application/json': {'schema': {'type': 'string'}}},
     }
 
-    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['paths']['/required-endpoint']['get']['responses']['200'] = responses_200_ref
     fx_spec_required['components'] = {'responses': {'ItemResponse': responses_schema}}
 
     spec_file = fx_spec_as_file(fx_spec_required)
     spec_obj = load_from_yaml(spec_file)
 
-    assert spec_obj['paths']['/endpoint']['get']['responses']['200'].get('$ref') is None
-    assert spec_obj['paths']['/endpoint']['get']['responses']['200'] == responses_schema
+    assert spec_obj['paths']['/required-endpoint']['get']['responses']['200'].get('$ref') is None
+    assert spec_obj['paths']['/required-endpoint']['get']['responses']['200'] == responses_schema
 
 
 def test_loaders_yaml__response_nested_ref(fx_spec_required, fx_spec_as_file):
@@ -39,24 +39,27 @@ def test_loaders_yaml__response_nested_ref(fx_spec_required, fx_spec_as_file):
     }
     field_schema = {'type': 'string'}
 
-    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['paths']['/required-endpoint']['get']['responses']['200'] = responses_200_ref
     fx_spec_required['components'] = {'responses': {'ItemResponse': responses_schema}}
     fx_spec_required['components'].update({'schemas': {'FieldSchema': field_schema}})
 
     spec_file = fx_spec_as_file(fx_spec_required)
     spec_obj = load_from_yaml(spec_file)
 
-    assert spec_obj['paths']['/endpoint']['get']['responses']['200'].get('$ref') is None
+    assert spec_obj['paths']['/required-endpoint']['get']['responses']['200'].get('$ref') is None
     assert (
-        spec_obj['paths']['/endpoint']['get']['responses']['200']['content']['application/json'][
-            'schema'
-        ].get('$ref')
+        spec_obj['paths']['/required-endpoint']['get']['responses']['200']['content'][
+            'application/json'
+        ]['schema'].get('$ref')
         is None
     )
 
     resolved_hierarchy_schema = deepcopy(responses_schema)
     resolved_hierarchy_schema['content']['application/json']['schema'] = field_schema
-    assert spec_obj['paths']['/endpoint']['get']['responses']['200'] == resolved_hierarchy_schema
+    assert (
+        spec_obj['paths']['/required-endpoint']['get']['responses']['200']
+        == resolved_hierarchy_schema
+    )
 
 
 def test_loaders__yaml__parameters_ref(fx_spec_required, fx_spec_as_file):
@@ -67,22 +70,22 @@ def test_loaders__yaml__parameters_ref(fx_spec_required, fx_spec_as_file):
         'schema': {'type': 'array', 'items': {'type': 'string'}},
     }
 
-    fx_spec_required['paths']['/endpoint']['parameters'] = param_ref
-    fx_spec_required['paths']['/endpoint']['get']['parameters'] = param_ref
+    fx_spec_required['paths']['/required-endpoint']['parameters'] = param_ref
+    fx_spec_required['paths']['/required-endpoint']['get']['parameters'] = param_ref
     fx_spec_required['components'] = {'parameters': {'QueryParam': param_schema}}
 
     spec_file = fx_spec_as_file(fx_spec_required)
     spec_obj = load_from_yaml(spec_file)
 
-    assert spec_obj['paths']['/endpoint']['parameters'][0].get('$ref') is None
-    assert spec_obj['paths']['/endpoint']['parameters'][0] == param_schema
-    assert spec_obj['paths']['/endpoint']['get']['parameters'][0] == param_schema
+    assert spec_obj['paths']['/required-endpoint']['parameters'][0].get('$ref') is None
+    assert spec_obj['paths']['/required-endpoint']['parameters'][0] == param_schema
+    assert spec_obj['paths']['/required-endpoint']['get']['parameters'][0] == param_schema
 
 
 def test_loader__internal__unknown_ref(fx_spec_required, fx_spec_as_file):
     responses_200_ref = {'$ref': '#/components/schemas/NonExistentScheme'}
 
-    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['paths']['/required-endpoint']['get']['responses']['200'] = responses_200_ref
 
     spec_file = fx_spec_as_file(fx_spec_required)
 
@@ -95,7 +98,7 @@ def test_loader__internal__unknown_ref(fx_spec_required, fx_spec_as_file):
 @pytest.mark.parametrize('bad_ref', [None, ''])
 def test_loader__internal__resolver__bad_ref(fx_spec_required, fx_spec_as_file, bad_ref):
     responses_200_ref = {'$ref': bad_ref}
-    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['paths']['/required-endpoint']['get']['responses']['200'] = responses_200_ref
 
     spec_file = fx_spec_as_file(fx_spec_required)
 
@@ -108,7 +111,7 @@ def test_loader__internal__resolver__bad_ref(fx_spec_required, fx_spec_as_file, 
 @pytest.mark.parametrize('bad_ref', [1, '#', '/'])
 def test_loader__internal__reader__bad_ref(fx_spec_required, fx_spec_as_file, bad_ref):
     responses_200_ref = {'$ref': bad_ref}
-    fx_spec_required['paths']['/endpoint']['get']['responses']['200'] = responses_200_ref
+    fx_spec_required['paths']['/required-endpoint']['get']['responses']['200'] = responses_200_ref
 
     spec_file = fx_spec_as_file(fx_spec_required)
 

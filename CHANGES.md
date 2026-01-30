@@ -1,3 +1,9 @@
+## Version 0.9.0
+
+* Extend `Path Item Object` schema.
+* Refactoring schema names.
+* Refactoring tests.
+
 ## Version 0.8.0
 
 * Add schema for example object.

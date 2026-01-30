@@ -8,7 +8,7 @@ from ..base import DocStringFields
 from .schema_object_schema import SchemaObjectSchema
 
 
-class ExampleSchema(DocStringFields, BaseSchema):
+class ExampleObjectSchema(DocStringFields, BaseSchema):
     dataValue = fields.Nested(SchemaObjectSchema)
     serializedValue = fields.String(validate=validate.Length(min=1))
     externalValue = fields.String(validate=validate.Length(min=1))

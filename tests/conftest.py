@@ -14,6 +14,13 @@ pytest_plugins = (
     'tests.objects.external_docs_object.conftest',
     'tests.objects.info_object.conftest',
     'tests.objects.license_object.conftest',
+    'tests.objects.media_type_object.conftest',
+    'tests.objects.openapi_object.conftest',
+    'tests.objects.operation_object.conftest',
+    'tests.objects.path_item_object.conftest',
+    'tests.objects.paths_object.conftest',
+    'tests.objects.response_object.conftest',
+    'tests.objects.responses_object.conftest',
     'tests.objects.schema_object.conftest',
     'tests.objects.schema_object.string_field.conftest',
     'tests.objects.schema_object.boolean_field.conftest',
@@ -25,58 +32,13 @@ pytest_plugins = (
 
 
 @pytest.fixture
-def fx_spec_required(fx_info_object_required, fx_schema_object__required):
-    payload = {
-        'openapi': '3.2.0',
-        'info': fx_info_object_required,
-        'paths': {
-            '/endpoint': {
-                'get': {
-                    'operationId': 'endpoint-get',
-                    'responses': {
-                        '200': {
-                            'description': 'OK',
-                            'content': {'application/json': {'schema': fx_schema_object__required}},
-                        }
-                    },
-                }
-            }
-        },
-    }
-    return payload
+def fx_spec_required(fx_openapi_object__required):
+    return fx_openapi_object__required
 
 
 @pytest.fixture
-def fx_spec_full(
-    fx_info_object_full,
-    fx_server_object_full,
-    fx_schema_object__full,
-    fx_external_docs_object_full,
-    fx_tag_object_full,
-):
-    payload = {
-        'openapi': '3.2.0',
-        'info': fx_info_object_full,
-        'jsonSchemaDialect': 'https://json-schema.org/draft/2020-12/schema',
-        'servers': [fx_server_object_full],
-        'paths': {
-            '/endpoint': {
-                'get': {
-                    'operationId': 'endpoint-get',
-                    'tags': ['test_endpoint'],
-                    'responses': {
-                        '200': {
-                            'description': 'OK',
-                            'content': {'application/json': {'schema': fx_schema_object__full}},
-                        }
-                    },
-                }
-            }
-        },
-        'tags': [fx_tag_object_full],
-        'externalDocs': fx_external_docs_object_full,
-    }
-    return payload
+def fx_spec_full(fx_openapi_object_full):
+    return fx_openapi_object_full
 
 
 @pytest.fixture
