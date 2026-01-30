@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture
-def fx_schema_object__required(fx_field_string__required) -> dict:
+def fx_schema_object_required(fx_field_string__required) -> dict:
     return {
         'type': 'object',
         'properties': {'message': fx_field_string__required},
@@ -10,8 +10,8 @@ def fx_schema_object__required(fx_field_string__required) -> dict:
 
 
 @pytest.fixture
-def fx_schema_object__full(
-    fx_schema_object__required,
+def fx_schema_object_full(
+    fx_schema_object_required,
     fx_field_string__full,
     fx_field_string__binary,
     fx_field_string__date,
@@ -23,11 +23,11 @@ def fx_schema_object__full(
     fx_field_string__uri,
     fx_field_string__uuid,
     fx_field_boolean__full,
-    fx_field_number__full,
+    fx_field_number_full,
     fx_field_integer__full,
 ) -> dict:
     return {
-        **fx_schema_object__required,
+        **fx_schema_object_required,
         'summary': 'Object schema',
         'description': 'Example to object field.',
         'required': ['message'],
@@ -45,7 +45,7 @@ def fx_schema_object__full(
             'uri': fx_field_string__uri,
             'uuid': fx_field_string__uuid,
             'boolean': fx_field_boolean__full,
-            'number': fx_field_number__full,
+            'number': fx_field_number_full,
             'integer': fx_field_integer__full,
         },
     }

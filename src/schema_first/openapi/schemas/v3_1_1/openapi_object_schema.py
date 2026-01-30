@@ -7,16 +7,16 @@ from ..constants import OPENAPI_VERSION_3_2
 from ..fields import ENDPOINT_FIELD
 from ..validators import VersionMatch
 from .components_object_schema import ComponentsObjectSchema
-from .external_docs_schema import ExternalDocsSchema
-from .info_schema import InfoSchema
+from .external_docs_object_schema import ExternalDocsObjectSchema
+from .info_object_schema import InfoObjectSchema
 from .path_item_object_schema import PathItemObjectSchema
-from .server_schema import ServerSchema
-from .tag_schema import TagSchema
+from .server_object_schema import ServerObjectSchema
+from .tag_object_schema import TagObjectSchema
 
 
 class OpenAPIObjectSchema(BaseSchema):
     openapi = fields.String(required=True, validate=VersionMatch(OPENAPI_VERSION_3_2))
-    info = fields.Nested(InfoSchema, required=True)
+    info = fields.Nested(InfoObjectSchema, required=True)
     paths = fields.Dict(
         required=True,
         keys=ENDPOINT_FIELD,
@@ -25,10 +25,10 @@ class OpenAPIObjectSchema(BaseSchema):
 
     jsonSchemaDialect = fields.URL()
 
-    servers = fields.Nested(ServerSchema, many=True)
+    servers = fields.Nested(ServerObjectSchema, many=True)
     components = fields.Nested(ComponentsObjectSchema)
-    tags = fields.Nested(TagSchema, many=True)
-    externalDocs = fields.Nested(ExternalDocsSchema)
+    tags = fields.Nested(TagObjectSchema, many=True)
+    externalDocs = fields.Nested(ExternalDocsObjectSchema)
 
     @validates_schema
     def validate_tags(self, data, **kwargs):

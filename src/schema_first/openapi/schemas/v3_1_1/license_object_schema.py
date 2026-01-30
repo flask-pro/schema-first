@@ -5,7 +5,7 @@ from marshmallow import ValidationError
 from ..base import BaseSchema
 
 
-class LicenseSchema(BaseSchema):
+class LicenseObjectSchema(BaseSchema):
     name = fields.String(required=True)
 
     identifier = fields.String()

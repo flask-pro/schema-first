@@ -9,7 +9,7 @@ from tests.utils import get_schema_from_request
 def test_converter__schema_fields(fx_spec_full, fx_spec_as_file):
     spec_file = fx_spec_as_file(fx_spec_full)
     spec = Specification(spec_file).load()
-    request_schema = get_schema_from_request(spec.reassembly_spec, '/endpoint', '200')
+    request_schema = get_schema_from_request(spec.reassembly_spec, '/full-endpoint', '200')
 
     assert isinstance(request_schema().fields['message'], fields.String)
     assert isinstance(request_schema().fields['binary'], fields.String)
@@ -43,7 +43,7 @@ def test_converter__schema_fields(fx_spec_full, fx_spec_as_file):
 def test_converter__string_valid(fx_spec_full, fx_spec_as_file, schema):
     spec_file = fx_spec_as_file(fx_spec_full)
     spec = Specification(spec_file).load()
-    request_schema = get_schema_from_request(spec.reassembly_spec, '/endpoint', '200')
+    request_schema = get_schema_from_request(spec.reassembly_spec, '/full-endpoint', '200')
 
     schema['message'] = 'Valid string'
     request_schema().load(schema)
@@ -67,7 +67,7 @@ def test_converter__string_valid(fx_spec_full, fx_spec_as_file, schema):
 def test_converter__string_not_valid(fx_spec_full, fx_spec_as_file, schema):
     spec_file = fx_spec_as_file(fx_spec_full)
     spec = Specification(spec_file).load()
-    request_schema = get_schema_from_request(spec.reassembly_spec, '/endpoint', '200')
+    request_schema = get_schema_from_request(spec.reassembly_spec, '/full-endpoint', '200')
 
     with pytest.raises(ValidationError):
         request_schema().load(schema)
@@ -77,6 +77,6 @@ def test_converter__string_not_valid(fx_spec_full, fx_spec_as_file, schema):
 def test_converter__string_nullable(fx_spec_full, fx_spec_as_file, schema):
     spec_file = fx_spec_as_file(fx_spec_full)
     spec = Specification(spec_file).load()
-    request_schema = get_schema_from_request(spec.reassembly_spec, '/endpoint', '200')
+    request_schema = get_schema_from_request(spec.reassembly_spec, '/full-endpoint', '200')
 
     request_schema().load(schema)

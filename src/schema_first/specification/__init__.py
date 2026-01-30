@@ -140,7 +140,9 @@ class Specification:
     def _reassembly_of_schemas(self, obj: Any) -> Any:
         if isinstance(obj, dict):
             for k, v in obj.items():
-                if k == 'schema':
+                # Checking for object type is needed to skip already resolved schemes.
+                # This is necessary because of passing variables by reference in Python.
+                if k == 'schema' and isinstance(v, dict):
                     obj[k] = self._convert_from_openapi_to_marshmallow_schema(v)
                 else:
                     self._reassembly_of_schemas(v)

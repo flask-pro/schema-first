@@ -27,7 +27,7 @@ def test_specification(request, fx_spec_as_file, fx):
 
     spec.load()
 
-    request_schema = get_schema_from_request(spec.reassembly_spec, '/endpoint', '200')
+    request_schema = get_schema_from_request(spec.reassembly_spec, '/required-endpoint', '200')
     assert isinstance(request_schema(), Schema)
     assert isinstance(request_schema().fields['message'], fields.String)
     assert request_schema().load({'message': 'Valid string'})
