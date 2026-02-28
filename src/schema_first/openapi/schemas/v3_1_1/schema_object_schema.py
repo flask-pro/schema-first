@@ -10,6 +10,9 @@ from marshmallow import validates
 from marshmallow import validates_schema
 from marshmallow import ValidationError
 
+from schema_first.openapi.schemas.constants import FLOAT_FORMATS
+from schema_first.openapi.schemas.constants import INT_FORMATS
+
 from ..base import BaseSchema
 from ..base import DocStringFields
 from ..constants import FORMATS
@@ -19,6 +22,13 @@ from ..constants import TYPES
 class BaseSchemaField(DocStringFields, BaseSchema):
     type = fields.String(required=True, validate=validate.OneOf(TYPES))
     nullable = fields.Boolean()
+
+    @validates_schema
+    def validate_default_via_format(self, data, **kwargs):
+        if 'default' in data and 'format' in data:
+            error = format_schemas[data['format']]().validate({'default': data['default']})
+            if error:
+                raise ValidationError(str(error))
 
 
 class FormatBinarySchema(BaseSchema):
@@ -57,17 +67,22 @@ class FormatUUIDSchema(BaseSchema):
     default = fields.UUID()
 
 
-format_schemas = {
-    'binary': FormatBinarySchema,
-    'date': FormatDateSchema,
-    'date-time': FormatDateTimeSchema,
-    'email': FormatEmailSchema,
-    'ipv4': FormatIPv4Schema,
-    'ipv6': FormatIPv6Schema,
-    'time': FormatTimeSchema,
-    'uri': FormatURISchema,
-    'uuid': FormatUUIDSchema,
-}
+class FormatINT32Schema(BaseSchema):
+    default = fields.Integer(validate=validate.Range(min=-2_147_483_648, max=2_147_483_647))
+
+
+class FormatINT64Schema(BaseSchema):
+    default = fields.Integer(
+        validate=validate.Range(min=-9_223_372_036_854_775_808, max=9_223_372_036_854_775_807)
+    )
+
+
+class FormatFloatSchema(BaseSchema):
+    default = fields.Float(validate=validate.Range(min=3.4e-38, max=3.4e38))
+
+
+class FormatDoubleSchema(BaseSchema):
+    default = fields.Float(validate=validate.Range(min=1.7e-308, max=1.7e308))
 
 
 class StringFieldSchema(BaseSchemaField):
@@ -90,13 +105,6 @@ class StringFieldSchema(BaseSchemaField):
             result = re.match(data['pattern'], data['default'])
             if result is None:
                 raise ValidationError(f'<{data["default"]}> does not match <{data["pattern"]}>')
-
-    @validates_schema
-    def validate_default_via_format(self, data, **kwargs):
-        if 'default' in data and 'format' in data:
-            error = format_schemas[data['format']]().validate({'default': data['default']})
-            if error:
-                raise ValidationError(str(error))
 
     @validates_schema
     def validate_length(self, data, **kwargs):
@@ -137,6 +145,7 @@ class BooleanFieldSchema(BaseSchemaField):
 
 
 class NumberFieldSchema(BaseSchemaField):
+    format = fields.String(validate=validate.OneOf(FLOAT_FORMATS))
     minimum = fields.Float()
     maximum = fields.Float()
     exclusiveMinimum = fields.Float()
@@ -180,6 +189,7 @@ class NumberFieldSchema(BaseSchemaField):
 
 
 class IntegerFieldSchema(NumberFieldSchema):
+    format = fields.String(validate=validate.OneOf(INT_FORMATS))
     minimum = fields.Integer()
     maximum = fields.Integer()
     exclusiveMinimum = fields.Integer()
@@ -194,6 +204,22 @@ field_schemas = {
     'number': NumberFieldSchema,
     'object': ObjectFieldSchema,
     'string': StringFieldSchema,
+}
+
+format_schemas = {
+    'binary': FormatBinarySchema,
+    'date': FormatDateSchema,
+    'date-time': FormatDateTimeSchema,
+    'email': FormatEmailSchema,
+    'ipv4': FormatIPv4Schema,
+    'ipv6': FormatIPv6Schema,
+    'time': FormatTimeSchema,
+    'uri': FormatURISchema,
+    'uuid': FormatUUIDSchema,
+    'int32': FormatINT32Schema,
+    'int64': FormatINT64Schema,
+    'float': FormatFloatSchema,
+    'double': FormatDoubleSchema,
 }
 
 

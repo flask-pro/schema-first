@@ -19,3 +19,13 @@ def fx_field_integer__full(fx_field_integer__required) -> dict:
         'multipleOf': 1,
         'default': 0,
     }
+
+
+@pytest.fixture
+def fx_field_integer__int32(fx_field_integer__full) -> dict:
+    return {**fx_field_integer__full, 'format': 'int32'}
+
+
+@pytest.fixture
+def fx_field_integer__int64(fx_field_integer__full) -> dict:
+    return {**fx_field_integer__full, 'format': 'int64'}

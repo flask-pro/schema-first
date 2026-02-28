@@ -10,7 +10,7 @@ def test_number_field(request, fixture):
 
 
 @pytest.mark.parametrize(
-    'value,message',
+    ('value', 'message'),
     [
         ('Bad number.', "{'default': ['Not a valid number.']}"),
         (None, "{'default': ['Field may not be null.']}"),
