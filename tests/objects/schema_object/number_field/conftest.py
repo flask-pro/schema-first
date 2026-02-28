@@ -17,5 +17,15 @@ def fx_field_number_full(fx_field_number_required) -> dict:
         'exclusiveMinimum': -5.0,
         'exclusiveMaximum': 5,
         'multipleOf': 0.5,
-        'default': 0.0,
+        'default': 0.1,
     }
+
+
+@pytest.fixture
+def fx_field_number__float(fx_field_number_full) -> dict:
+    return {**fx_field_number_full, 'format': 'float'}
+
+
+@pytest.fixture
+def fx_field_number__double(fx_field_number_full) -> dict:
+    return {**fx_field_number_full, 'format': 'double'}

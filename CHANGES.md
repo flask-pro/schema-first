@@ -1,3 +1,9 @@
+## Version 0.10.0
+
+* Add `format` field for integer and number type fields.
+* Bump tools from pre-commit-hooks.
+* Stylistic tests changes.
+
 ## Version 0.9.0
 
 * Extend `Path Item Object` schema.
