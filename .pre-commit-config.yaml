@@ -33,6 +33,10 @@ repos:
   hooks:
   - id: pyupgrade
     args: [--py313-plus]
+- repo: https://github.com/hauntsaninja/no_implicit_optional
+  rev: '1.4'
+  hooks:
+  - id: no_implicit_optional
 - repo: https://github.com/psf/black
   rev: 26.1.0
   hooks:

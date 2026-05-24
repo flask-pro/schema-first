@@ -1,4 +1,5 @@
 from marshmallow import fields
+from marshmallow import post_load
 from marshmallow import validates_schema
 from marshmallow import ValidationError
 
@@ -45,3 +46,12 @@ class OpenAPIObjectSchema(BaseSchema):
             parents_not_in_names = [parent for parent in parents if parent not in names]
             if parents_not_in_names:
                 raise ValidationError(f'Parents <{names}> not exist in names tags <{names}>.')
+
+    @post_load
+    def validate_path_parameter(self, data, **kwargs) -> None:
+        endpoints = data['paths'].keys()
+        for endpoint in endpoints:
+            if '{' in endpoint or '}' in endpoint:
+                raise NotImplementedError(
+                    'Need check path-parameters template in "parameters" key.'
+                )
