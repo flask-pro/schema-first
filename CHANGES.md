@@ -1,3 +1,7 @@
+## Version 0.11.0
+
+* Add schema for parameter object.
+
 ## Version 0.10.0
 
 * Add `format` field for integer and number type fields.
