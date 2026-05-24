@@ -5,3 +5,4 @@ INT_FORMATS = ('int32', 'int64')
 FLOAT_FORMATS = ('float', 'double')
 RE_VERSION = r'^[0-9]+.[0-9]+.[0-9]+$'
 RE_SERVER_URL = r'^((http|https)://)|(/)*$'
+LOCATION_PARAMETER = ('query', 'querystring', 'header', 'path', 'cookie')

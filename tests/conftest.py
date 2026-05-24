@@ -18,6 +18,7 @@ pytest_plugins = (
     'tests.objects.openapi_object.conftest',
     'tests.objects.operation_object.conftest',
     'tests.objects.path_item_object.conftest',
+    'tests.objects.path_item_object.parameter_object.conftest',
     'tests.objects.paths_object.conftest',
     'tests.objects.response_object.conftest',
     'tests.objects.responses_object.conftest',
