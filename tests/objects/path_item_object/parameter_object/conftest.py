@@ -7,11 +7,14 @@ def fx_parameter_object_required() -> dict:
 
 
 @pytest.fixture
-def fx_parameter_object_full(fx_parameter_object_required, fx_example_object_full) -> dict:
+def fx_parameter_object_full(
+    fx_parameter_object_required, fx_example_object_full, fx_schema_object_full
+) -> dict:
     return {
         **fx_parameter_object_required,
         'description': 'Item ID',
         'required': False,
         'deprecated': True,
         'examples': {'ID': fx_example_object_full},
+        'schema': fx_schema_object_full,
     }
