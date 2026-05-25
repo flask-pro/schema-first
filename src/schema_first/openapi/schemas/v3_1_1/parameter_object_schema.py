@@ -5,6 +5,7 @@ from ..base import BaseSchema
 from ..constants import LOCATION_PARAMETER
 from ..fields import DESCRIPTION_FIELD
 from .example_object_schema import ExampleObjectSchema
+from .schema_object_schema import SchemaObjectSchema
 
 
 class ParameterObjectSchema(BaseSchema):
@@ -15,3 +16,4 @@ class ParameterObjectSchema(BaseSchema):
     required = fields.Boolean()
     deprecated = fields.Boolean()
     examples = fields.Dict(keys=fields.String(), values=fields.Nested(ExampleObjectSchema))
+    schema = fields.Nested(SchemaObjectSchema)
