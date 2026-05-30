@@ -12,7 +12,7 @@ classifiers = [
   "Programming Language :: Python :: 3"
 ]
 dependencies = [
-  'marshmallow>=4.0.0',
+  'marshmallow>=4.3.0',
   'PyYAML>=6.0.3'
 ]
 description = "OpenAPI specification validator and converter to Marshmallow schemas."
@@ -20,7 +20,7 @@ license = {file = "LICENSE"}
 name = "Schema-First"
 readme = "README.md"
 requires-python = ">=3.13"
-version = "0.11.1"
+version = "0.11.2"
 
 [project.optional-dependencies]
 dev = [
