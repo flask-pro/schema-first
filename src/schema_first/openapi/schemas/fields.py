@@ -7,6 +7,7 @@ SUMMARY_FIELD = fields.String(validate=validate.Length(min=1, max=150))
 DESCRIPTION_FIELD = fields.String(validate=validate.Length(min=1))
 REQUIRED_DESCRIPTION_FIELD = fields.String(required=True)
 MEDIA_TYPE_FIELD = fields.String(required=True)
+HEADER_NAME_FIELD = fields.String(required=True)
 REF_FIELD = fields.String(
     required=True, data_key='$ref', validate=validate.Regexp(r'^#/[a-zA-Z/]*$')
 )

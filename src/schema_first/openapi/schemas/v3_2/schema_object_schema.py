@@ -104,6 +104,7 @@ class StringFieldSchema(BaseSchemaField):
     format = fields.String(validate=validate.OneOf(FORMATS))
     minLength = fields.Integer(validate=[validate.Range(min=0)])
     maxLength = fields.Integer(validate=[validate.Range(min=0)])
+    enum = fields.List(fields.String())
     pattern = fields.String()
     default = fields.String()
     example = fields.String()
@@ -117,19 +118,27 @@ class StringFieldSchema(BaseSchemaField):
 
     @validates_schema
     def validate_default_and_example(self, data, **kwargs):
-        if 'default' in data and 'pattern' in data:
-            result = re.match(data['pattern'], data['default'])
-            if result is None:
-                raise ValidationError(
-                    f'<{data["default"]}> from default field does not match <{data["pattern"]}>'
-                )
+        if 'default' in data:
+            if 'pattern' in data:
+                result = re.match(data['pattern'], data['default'])
+                if result is None:
+                    raise ValidationError(
+                        f'<{data["default"]}> from default field does not match <{data["pattern"]}>'
+                    )
+            if 'enum' in data:
+                if data['default'] not in data['enum']:
+                    raise ValidationError(f'<{data["default"]}> not in <{data["enum"]}>')
 
-        if 'example' in data and 'pattern' in data:
-            result = re.match(data['pattern'], data['example'])
-            if result is None:
-                raise ValidationError(
-                    f'<{data["example"]}> from example field does not match <{data["pattern"]}>'
-                )
+        if 'example' in data:
+            if 'pattern' in data:
+                result = re.match(data['pattern'], data['example'])
+                if result is None:
+                    raise ValidationError(
+                        f'<{data["example"]}> from example field does not match <{data["pattern"]}>'
+                    )
+            if 'enum' in data:
+                if data['example'] not in data['enum']:
+                    raise ValidationError(f'<{data["example"]}> not in <{data["enum"]}>')
 
     @validates_schema
     def validate_length(self, data, **kwargs):
@@ -262,9 +271,16 @@ class SchemaObjectSchema(BaseSchemaField):
         partial: bool | types.StrSequenceOrSet | None = None,
         unknown: types.UnknownOption | None = None,
     ):
-        try:
-            return field_schemas[data['type']]().load(
-                data, many=many, partial=partial, unknown=unknown
-            )
-        except KeyError:
-            raise ValidationError(f'Data type in <{data}> not exist.')
+        if data['type'] == 'array':
+            field_schema = ArrayFieldSchema
+        else:
+            try:
+                field_schema = field_schemas[data['type']]
+            except KeyError:
+                raise ValidationError(f'Data type <{data["type"]}> not exist.')
+
+        return field_schema().load(data, many=many, partial=partial, unknown=unknown)
+
+
+class ArrayFieldSchema(BaseSchemaField):
+    items = fields.Nested(SchemaObjectSchema, required=True)

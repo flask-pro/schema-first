@@ -1,7 +1,7 @@
 from marshmallow.exceptions import ValidationError
 import pytest
 
-from schema_first.openapi.schemas.v3_1_1.schema_object_schema import SchemaObjectSchema
+from schema_first.openapi.schemas.v3_2.schema_object_schema import SchemaObjectSchema
 
 
 @pytest.mark.parametrize('fixture', ['fx_field_integer__required', 'fx_field_integer__full'])

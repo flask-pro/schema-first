@@ -1,4 +1,4 @@
-from schema_first.openapi.schemas.v3_1_1.media_type_object_schema import MediaTypeObjectSchema
+from schema_first.openapi.schemas.v3_2.media_type_object_schema import MediaTypeObjectSchema
 
 
 def test_media_type_object_schema_required(fx_media_type_object_required):

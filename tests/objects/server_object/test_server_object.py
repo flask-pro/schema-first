@@ -1,7 +1,7 @@
 from marshmallow.exceptions import ValidationError
 import pytest
 
-from schema_first.openapi.schemas.v3_1_1.server_object_schema import ServerObjectSchema
+from schema_first.openapi.schemas.v3_2.server_object_schema import ServerObjectSchema
 
 
 def test_server_schema_required(fx_server_object_required):

@@ -1,4 +1,4 @@
-from schema_first.openapi.schemas.v3_1_1.info_object_schema import InfoObjectSchema
+from schema_first.openapi.schemas.v3_2.info_object_schema import InfoObjectSchema
 
 
 def test_info_object_schema_required(fx_info_object_required):

@@ -2,16 +2,16 @@ import pytest
 
 
 @pytest.fixture
-def fx_parameter_object_required() -> dict:
+def fx_parameter_object_from_path_required() -> dict:
     return {'name': 'id', 'in': 'path'}
 
 
 @pytest.fixture
-def fx_parameter_object_full(
-    fx_parameter_object_required, fx_example_object_full, fx_schema_object_full
+def fx_parameter_object_from_path_full(
+    fx_parameter_object_from_path_required, fx_example_object_full, fx_schema_object_full
 ) -> dict:
     return {
-        **fx_parameter_object_required,
+        **fx_parameter_object_from_path_required,
         'description': 'Item ID',
         'required': False,
         'deprecated': True,

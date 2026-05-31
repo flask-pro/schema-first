@@ -1,7 +1,7 @@
 from marshmallow.exceptions import ValidationError
 import pytest
 
-from src.schema_first.openapi.schemas.v3_1_1.example_object_schema import ExampleObjectSchema
+from src.schema_first.openapi.schemas.v3_2.example_object_schema import ExampleObjectSchema
 
 
 def test_example_schema_required(fx_example_object_required):

@@ -1,4 +1,4 @@
-from schema_first.openapi.schemas.v3_1_1.operation_object_schema import OperationObjectSchema
+from schema_first.openapi.schemas.v3_2.operation_object_schema import OperationObjectSchema
 
 
 def test_operation_schema_required(fx_operation_object_required):
