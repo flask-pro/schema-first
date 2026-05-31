@@ -28,7 +28,10 @@ def test_string_field__pattern__default(fx_field_string__required):
     with pytest.raises(ValidationError) as e:
         SchemaObjectSchema().load(fx_field_string__required)
 
-    assert str(e.value) == "{'_schema': ['<Bad default.> does not match <^\\\\d*$>']}"
+    assert (
+        str(e.value)
+        == "{'_schema': ['<Bad default.> from default field does not match <^\\\\d*$>']}"
+    )
 
 
 def test_string_field__format__default(fx_field_string__email):

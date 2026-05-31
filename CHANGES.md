@@ -1,3 +1,7 @@
+## Version 0.11.2
+
+* Added support for multi-file specifications.
+
 ## Version 0.11.1
 
 * Add `schema` field for parameter object.

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pathlib import Path
 
 from marshmallow import fields
@@ -38,6 +39,31 @@ def test_specification(request, fx_spec_as_file, fx):
 def test_specification_from_file(file_path):
     spec_as_dict, _ = read_from_filename(file_path)
     osv_validate(spec_as_dict)
+
+    spec = Specification(file_path)
+    spec.load()
+
+
+def test_specification__multifile_required(fx_spec_as_file, fx_spec_required):
+    endpoint_spec = {'required-endpoint': deepcopy(fx_spec_required['paths']['/required-endpoint'])}
+    endpoint_file = fx_spec_as_file(endpoint_spec, file_name='required-endpoint.yaml')
+
+    root_file = fx_spec_required
+    root_file['paths']['/required-endpoint'] = {'$ref': f'{endpoint_file.name}#/required-endpoint'}
+    spec_file = fx_spec_as_file(root_file)
+
+    spec_as_dict, base_uri = read_from_filename(spec_file)
+    osv_validate(spec_as_dict, base_uri=base_uri)
+
+    spec = Specification(spec_file)
+    spec.load()
+
+
+@pytest.mark.xfail(reason='Schema specification not fully realisation.')
+def test_specification__multifile():
+    file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'multifile', 'openapi', 'openapi.yaml')
+    spec_as_dict, base_uri = read_from_filename(file_path)
+    osv_validate(spec_as_dict, base_uri=base_uri)
 
     spec = Specification(file_path)
     spec.load()

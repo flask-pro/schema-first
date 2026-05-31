@@ -33,56 +33,71 @@ class BaseSchemaField(DocStringFields, BaseSchema):
 
 class FormatBinarySchema(BaseSchema):
     default = fields.String()
+    example = fields.String()
 
 
 class FormatEmailSchema(BaseSchema):
     default = fields.Email()
+    example = fields.Email()
 
 
 class FormatDateSchema(BaseSchema):
     default = fields.Date()
+    example = fields.Date()
 
 
 class FormatDateTimeSchema(BaseSchema):
     default = fields.AwareDateTime(format='iso', default_timezone=None)
+    example = fields.AwareDateTime(format='iso', default_timezone=None)
 
 
 class FormatIPv4Schema(BaseSchema):
     default = fields.IPv4()
+    example = fields.IPv4()
 
 
 class FormatIPv6Schema(BaseSchema):
     default = fields.IPv6()
+    example = fields.IPv6()
 
 
 class FormatTimeSchema(BaseSchema):
     default = fields.Time(format='iso')
+    example = fields.Time(format='iso')
 
 
 class FormatURISchema(BaseSchema):
     default = fields.URL()
+    example = fields.URL()
 
 
 class FormatUUIDSchema(BaseSchema):
     default = fields.UUID()
+    example = fields.UUID()
 
 
 class FormatINT32Schema(BaseSchema):
     default = fields.Integer(validate=validate.Range(min=-2_147_483_648, max=2_147_483_647))
+    example = fields.Integer(validate=validate.Range(min=-2_147_483_648, max=2_147_483_647))
 
 
 class FormatINT64Schema(BaseSchema):
     default = fields.Integer(
         validate=validate.Range(min=-9_223_372_036_854_775_808, max=9_223_372_036_854_775_807)
     )
+    example = fields.Integer(
+        validate=validate.Range(min=-9_223_372_036_854_775_808, max=9_223_372_036_854_775_807)
+    )
 
 
 class FormatFloatSchema(BaseSchema):
     default = fields.Float(validate=validate.Range(min=3.4e-38, max=3.4e38))
+    example = fields.Float(validate=validate.Range(min=3.4e-38, max=3.4e38))
 
 
 class FormatDoubleSchema(BaseSchema):
     default = fields.Float(validate=validate.Range(min=1.7e-308, max=1.7e308))
+    example = fields.Float(validate=validate.Range(min=1.7e-308, max=1.7e308))
 
 
 class StringFieldSchema(BaseSchemaField):
@@ -91,6 +106,7 @@ class StringFieldSchema(BaseSchemaField):
     maxLength = fields.Integer(validate=[validate.Range(min=0)])
     pattern = fields.String()
     default = fields.String()
+    example = fields.String()
 
     @validates('pattern')
     def validate_pattern(self, value: str, data_key: str) -> None:
@@ -100,11 +116,20 @@ class StringFieldSchema(BaseSchemaField):
             raise ValidationError(f"Pattern <{value}> is error <{repr(e)}>.")
 
     @validates_schema
-    def validate_default(self, data, **kwargs):
+    def validate_default_and_example(self, data, **kwargs):
         if 'default' in data and 'pattern' in data:
             result = re.match(data['pattern'], data['default'])
             if result is None:
-                raise ValidationError(f'<{data["default"]}> does not match <{data["pattern"]}>')
+                raise ValidationError(
+                    f'<{data["default"]}> from default field does not match <{data["pattern"]}>'
+                )
+
+        if 'example' in data and 'pattern' in data:
+            result = re.match(data['pattern'], data['example'])
+            if result is None:
+                raise ValidationError(
+                    f'<{data["example"]}> from example field does not match <{data["pattern"]}>'
+                )
 
     @validates_schema
     def validate_length(self, data, **kwargs):
@@ -136,6 +161,7 @@ class ObjectFieldSchema(BaseSchemaField):
 
 class BooleanFieldSchema(BaseSchemaField):
     default = fields.Boolean(truthy=[True], falsy=[False])
+    example = fields.Boolean(truthy=[True], falsy=[False])
 
     @validates_schema
     def validate_default(self, data, **kwargs):
@@ -152,6 +178,7 @@ class NumberFieldSchema(BaseSchemaField):
     exclusiveMaximum = fields.Float()
     multipleOf = fields.Float(validate=[validate.Range(min=0, min_inclusive=False)])
     default = fields.Float()
+    example = fields.Float()
 
     @validates_schema
     def validate_default(self, data, **kwargs):
@@ -196,6 +223,7 @@ class IntegerFieldSchema(NumberFieldSchema):
     exclusiveMaximum = fields.Integer()
     multipleOf = fields.Integer(validate=[validate.Range(min=0, min_inclusive=False)])
     default = fields.Integer()
+    example = fields.Integer()
 
 
 field_schemas = {
