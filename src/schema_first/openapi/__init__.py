@@ -5,7 +5,7 @@ from marshmallow import ValidationError
 
 from ..loaders.yaml_loader import load_from_yaml
 from .exc import OpenAPIValidationError
-from .schemas.v3_1_1.openapi_object_schema import OpenAPIObjectSchema
+from .schemas.v3_2.openapi_object_schema import OpenAPIObjectSchema
 
 
 class OpenAPI:
@@ -17,4 +17,4 @@ class OpenAPI:
         try:
             return OpenAPIObjectSchema().load(self.raw_spec)
         except ValidationError as e:
-            raise OpenAPIValidationError(f'\n{pformat(e.messages)}')
+            raise OpenAPIValidationError(f'\n{pformat(e.messages, width=320)}')

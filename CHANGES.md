@@ -1,3 +1,7 @@
+## Version 0.12.0
+
+* Add schema for header object.
+
 ## Version 0.11.2
 
 * Added support for multi-file specifications.

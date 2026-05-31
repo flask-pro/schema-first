@@ -11,7 +11,7 @@ def fx_path_item_object_full(
     fx_path_item_object_required,
     fx_operation_object_full,
     fx_server_object_full,
-    fx_parameter_object_full,
+    fx_parameter_object_from_path_full,
 ) -> dict:
     return {
         **fx_path_item_object_required,
@@ -27,5 +27,5 @@ def fx_path_item_object_full(
         'trace': fx_operation_object_full,
         'query': fx_operation_object_full,
         'servers': [fx_server_object_full],
-        'parameters': [fx_parameter_object_full],
+        'parameters': [fx_parameter_object_from_path_full],
     }

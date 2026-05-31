@@ -10,9 +10,12 @@ def fx_response_object_required(fx_media_type_object_required) -> dict:
 
 
 @pytest.fixture
-def fx_response_object_full(fx_response_object_required, fx_media_type_object_full) -> dict:
+def fx_response_object_full(
+    fx_response_object_required, fx_media_type_object_full, fx_header_object_full
+) -> dict:
     return {
         **fx_response_object_required,
         'summary': 'Full Response Object.',
         'content': {'application/json': fx_media_type_object_full},
+        'headers': {'Content-Type': fx_header_object_full},
     }

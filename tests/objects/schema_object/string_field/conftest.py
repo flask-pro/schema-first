@@ -116,3 +116,15 @@ def fx_field_string__uuid(fx_field_string__required) -> dict:
         'maxLength': 36,
         'default': '261da395-0b75-44d7-8b28-c63d4192316b',
     }
+
+
+@pytest.fixture
+def fx_field_string__enum_full(fx_field_string__required) -> dict:
+    return {
+        **fx_field_string__required,
+        'minLength': 0,
+        'maxLength': 5,
+        'enum': ['one', 'two', 'three', 'four', 'five'],
+        'default': 'five',
+        'example': 'five',
+    }

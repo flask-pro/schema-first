@@ -1,7 +1,7 @@
 from marshmallow.exceptions import ValidationError
 import pytest
 
-from schema_first.openapi.schemas.v3_1_1.external_docs_object_schema import ExternalDocsObjectSchema
+from schema_first.openapi.schemas.v3_2.external_docs_object_schema import ExternalDocsObjectSchema
 
 
 def test_external_docs_schema_required(fx_external_docs_object_required):

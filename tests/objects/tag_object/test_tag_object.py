@@ -1,7 +1,7 @@
 from marshmallow.exceptions import ValidationError
 import pytest
 
-from schema_first.openapi.schemas.v3_1_1.tag_object_schema import TagObjectSchema
+from schema_first.openapi.schemas.v3_2.tag_object_schema import TagObjectSchema
 
 
 def test_tag_schema_required(fx_tag_object_required):

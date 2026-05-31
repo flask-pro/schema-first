@@ -12,7 +12,7 @@ def fx_operation_object_full(
     fx_external_docs_object_full,
     fx_responses_object_full,
     fx_server_object_full,
-    fx_parameter_object_full,
+    fx_parameter_object_from_path_full,
 ) -> dict:
     return {
         **fx_operation_object_required,
@@ -24,5 +24,5 @@ def fx_operation_object_full(
         'responses': fx_responses_object_full,
         'deprecated': False,
         'servers': [fx_server_object_full],
-        'parameters': [fx_parameter_object_full],
+        'parameters': [fx_parameter_object_from_path_full],
     }

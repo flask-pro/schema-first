@@ -25,6 +25,7 @@ def fx_schema_object_full(
     fx_field_boolean__full,
     fx_field_number_full,
     fx_field_integer__full,
+    fx_field_string__enum_full,
 ) -> dict:
     return {
         **fx_schema_object_required,
@@ -47,5 +48,6 @@ def fx_schema_object_full(
             'boolean': fx_field_boolean__full,
             'number': fx_field_number_full,
             'integer': fx_field_integer__full,
+            'enum_field': fx_field_string__enum_full,
         },
     }

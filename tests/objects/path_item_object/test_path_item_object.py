@@ -1,4 +1,4 @@
-from schema_first.openapi.schemas.v3_1_1.path_item_object_schema import PathItemObjectSchema
+from schema_first.openapi.schemas.v3_2.path_item_object_schema import PathItemObjectSchema
 
 
 def test_path_item_schema_required(fx_path_item_object_required):
