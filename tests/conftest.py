@@ -21,6 +21,7 @@ pytest_plugins = (
     'tests.objects.path_item_object.conftest',
     'tests.objects.path_item_object.parameter_object.conftest',
     'tests.objects.paths_object.conftest',
+    'tests.objects.request_body_object.conftest',
     'tests.objects.response_object.conftest',
     'tests.objects.response_object.header_object.conftest',
     'tests.objects.responses_object.conftest',

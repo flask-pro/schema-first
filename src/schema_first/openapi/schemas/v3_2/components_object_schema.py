@@ -6,6 +6,7 @@ from schema_first.openapi.schemas.v3_2.header_object_schema import HeaderObjectS
 from schema_first.openapi.schemas.v3_2.media_type_object_schema import MediaTypeObjectSchema
 from schema_first.openapi.schemas.v3_2.parameter_object_schema import ParameterObjectSchema
 from schema_first.openapi.schemas.v3_2.path_item_object_schema import PathItemObjectSchema
+from schema_first.openapi.schemas.v3_2.request_body_object_schema import RequestBodyObject
 from schema_first.openapi.schemas.v3_2.responses_object_schema import ResponseObjectSchema
 from schema_first.openapi.schemas.v3_2.schema_object_schema import SchemaObjectSchema
 
@@ -22,6 +23,9 @@ class ComponentsObjectSchema(BaseSchema):
     )
     examples = fields.Dict(
         keys=fields.String(), values=fields.Nested(ExampleObjectSchema, required=True)
+    )
+    requestBodies = fields.Dict(
+        keys=fields.String(), values=fields.Nested(RequestBodyObject, required=True)
     )
     headers = fields.Dict(
         keys=fields.String(), values=fields.Nested(HeaderObjectSchema, required=True)

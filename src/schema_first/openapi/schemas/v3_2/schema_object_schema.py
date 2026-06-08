@@ -284,3 +284,5 @@ class SchemaObjectSchema(BaseSchemaField):
 
 class ArrayFieldSchema(BaseSchemaField):
     items = fields.Nested(SchemaObjectSchema, required=True)
+    minItems = fields.Integer(validate=validate.Range(min=0))
+    maxItems = fields.Integer(validate=validate.Range(min=0))
