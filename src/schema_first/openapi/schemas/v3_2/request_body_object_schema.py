@@ -9,3 +9,4 @@ from .media_type_object_schema import MediaTypeObjectSchema
 class RequestBodyObject(BaseSchema):
     description = DESCRIPTION_FIELD
     content = fields.Dict(keys=MEDIA_TYPE_FIELD, values=fields.Nested(MediaTypeObjectSchema))
+    required = fields.Boolean()

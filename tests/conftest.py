@@ -9,6 +9,7 @@ import yaml
 tests_dir_abspath = os.path.dirname(os.path.abspath(__file__))
 
 pytest_plugins = (
+    'tests.objects.components_object.conftest',
     'tests.objects.contact_object.conftest',
     'tests.objects.example_object.conftest',
     'tests.objects.external_docs_object.conftest',
@@ -20,6 +21,7 @@ pytest_plugins = (
     'tests.objects.path_item_object.conftest',
     'tests.objects.path_item_object.parameter_object.conftest',
     'tests.objects.paths_object.conftest',
+    'tests.objects.request_body_object.conftest',
     'tests.objects.response_object.conftest',
     'tests.objects.response_object.header_object.conftest',
     'tests.objects.responses_object.conftest',
