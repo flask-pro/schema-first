@@ -14,6 +14,7 @@ def fx_openapi_object_full(
     fx_paths_object_full,
     fx_external_docs_object_full,
     fx_tag_object_full,
+    fx_components_object_full,
 ):
     return {
         **fx_openapi_object__required,
@@ -23,4 +24,5 @@ def fx_openapi_object_full(
         'paths': fx_paths_object_full,
         'tags': [fx_tag_object_full],
         'externalDocs': fx_external_docs_object_full,
+        'components': fx_components_object_full,
     }
