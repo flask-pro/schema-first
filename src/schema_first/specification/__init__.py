@@ -55,7 +55,7 @@ class Specification:
 
         return validators
 
-    def _convert_string_field(self, field_schema: dict, required: bool = False):
+    def _convert_string_field(self, field_schema: dict):
         format_string = field_schema.get('format', 'string')
         try:
             schema = FIELDS_VIA_FORMATS[format_string]
@@ -67,10 +67,10 @@ class Specification:
         initialized_schema = schema()
         initialized_schema.validate = self._make_field_validators(field_schema)
         initialized_schema.allow_none = field_schema.get('nullable', False)
-        initialized_schema.required = required
+        initialized_schema.required = field_schema.get('required', False)
         return initialized_schema
 
-    def _convert_boolean_field(self, field_schema: dict, required: bool = False):
+    def _convert_boolean_field(self, field_schema: dict):
         try:
             schema = FIELDS_VIA_TYPES[field_schema['type']]
         except KeyError:
@@ -80,10 +80,10 @@ class Specification:
 
         initialized_schema = schema()
         initialized_schema.allow_none = field_schema.get('nullable', False)
-        initialized_schema.required = required
+        initialized_schema.required = field_schema.get('required', False)
         return initialized_schema
 
-    def _convert_number_field(self, field_schema: dict, required: bool = False):
+    def _convert_number_field(self, field_schema: dict):
         try:
             schema = FIELDS_VIA_TYPES[field_schema['type']]
         except KeyError:
@@ -94,20 +94,20 @@ class Specification:
         initialized_schema = schema()
         initialized_schema.validate = self._make_field_validators(field_schema)
         initialized_schema.allow_none = field_schema.get('nullable', False)
-        initialized_schema.required = required
+        initialized_schema.required = field_schema.get('required', False)
         return initialized_schema
 
-    def _convert_field_any_type(self, field_schema: dict, required: bool = False):
+    def _convert_field_any_type(self, field_schema: dict):
         field_schema_converters = {
             'string': self._convert_string_field,
             'boolean': self._convert_boolean_field,
             'number': self._convert_number_field,
             'integer': self._convert_number_field,
+            'object': self._convert_object_field,
+            'array': self._convert_array_field,
         }
         try:
-            converted_field_schema = field_schema_converters[field_schema['type']](
-                field_schema, required=required
-            )
+            converted_field_schema = field_schema_converters[field_schema['type']](field_schema)
         except KeyError:
             raise NotImplementedError(
                 f'Schema <{field_schema}> for type <{field_schema["type"]}> not be converted.'
@@ -115,19 +115,14 @@ class Specification:
 
         return converted_field_schema
 
-    def _convert_from_openapi_to_marshmallow_schema(self, open_api_schema: dict) -> type[Schema]:
+    def _convert_object_field(self, open_api_schema: dict) -> type[Schema]:
         marshmallow_schema = {}
+        required_fields = open_api_schema.get('required', [])
         for field_name, field_schema in open_api_schema['properties'].items():
-            required_fields = open_api_schema.get('required', [])
+            if field_name in required_fields and field_schema['type'] != 'object':
+                field_schema['required'] = True
 
-            if field_name in required_fields:
-                is_required = True
-            else:
-                is_required = False
-
-            marshmallow_schema[field_name] = self._convert_field_any_type(
-                field_schema, required=is_required
-            )
+            marshmallow_schema[field_name] = self._convert_field_any_type(field_schema)
 
         additionalProperties = open_api_schema.get('additionalProperties', True)
         if additionalProperties is False:
@@ -137,13 +132,19 @@ class Specification:
 
         return Schema.from_dict(marshmallow_schema)
 
+    def _convert_array_field(self, open_api_schema: dict) -> type[Schema]:
+        array_item_schema = open_api_schema['items']
+        array_schema = self._convert_object_field(array_item_schema)
+        array_schema.opts.many = True
+        return array_schema
+
     def _reassembly_of_schemas(self, obj: Any) -> Any:
         if isinstance(obj, dict):
             for k, v in obj.items():
                 # Checking for object type is needed to skip already resolved schemes.
                 # This is necessary because of passing variables by reference in Python.
                 if k == 'schema' and isinstance(v, dict):
-                    obj[k] = self._convert_from_openapi_to_marshmallow_schema(v)
+                    obj[k] = self._convert_field_any_type(v)
                 else:
                     self._reassembly_of_schemas(v)
 

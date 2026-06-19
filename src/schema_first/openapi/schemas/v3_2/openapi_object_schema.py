@@ -1,3 +1,5 @@
+import re
+
 from marshmallow import fields
 from marshmallow import post_load
 from marshmallow import validates_schema
@@ -51,7 +53,13 @@ class OpenAPIObjectSchema(BaseSchema):
     def validate_path_parameter(self, data, **kwargs) -> None:
         endpoints = data['paths'].keys()
         for endpoint in endpoints:
-            if '{' in endpoint or '}' in endpoint:
-                raise NotImplementedError(
-                    'Need check path-parameters template in "parameters" key.'
-                )
+            param_names = re.findall(r'\{(.*?)}', endpoint)
+            if param_names:
+                params_from_components = data['components'].get('parameters')
+                if params_from_components:
+                    param_names_from_components = params_from_components.key()
+
+                    if not set(param_names).issubset(set(param_names_from_components)):
+                        raise ValidationError(
+                            f'Parameters from <{param_names}> not in </components/parameters>.'
+                        )
