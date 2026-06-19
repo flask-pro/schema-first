@@ -1,4 +1,8 @@
-## Version 0.12.0
+## Version 0.13.1
+
+* Add a check to ensure that the path parameters match the list of allowed parameter schemes.
+
+## Version 0.13.0
 
 * Add schema for components object.
 
