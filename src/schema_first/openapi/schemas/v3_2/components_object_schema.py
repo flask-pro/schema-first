@@ -9,6 +9,9 @@ from schema_first.openapi.schemas.v3_2.path_item_object_schema import PathItemOb
 from schema_first.openapi.schemas.v3_2.request_body_object_schema import RequestBodyObject
 from schema_first.openapi.schemas.v3_2.responses_object_schema import ResponseObjectSchema
 from schema_first.openapi.schemas.v3_2.schema_object_schema import SchemaObjectSchema
+from schema_first.openapi.schemas.v3_2.security_scheme_object_schema import (
+    SecuritySchemeObjectSchema,
+)
 
 
 class ComponentsObjectSchema(BaseSchema):
@@ -29,6 +32,9 @@ class ComponentsObjectSchema(BaseSchema):
     )
     headers = fields.Dict(
         keys=fields.String(), values=fields.Nested(HeaderObjectSchema, required=True)
+    )
+    securitySchemes = fields.Dict(
+        keys=fields.String(), values=fields.Nested(SecuritySchemeObjectSchema, required=True)
     )
     pathItems = fields.Dict(
         keys=fields.String(), values=fields.Nested(PathItemObjectSchema, required=True)

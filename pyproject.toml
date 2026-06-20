@@ -20,7 +20,7 @@ license = {file = "LICENSE"}
 name = "Schema-First"
 readme = "README.md"
 requires-python = ">=3.13"
-version = "0.13.1"
+version = "0.14.0"
 
 [project.optional-dependencies]
 dev = [
@@ -50,7 +50,11 @@ skip-string-normalization = true
 target-version = ['py313']
 
 [tool.isort]
+include_trailing_comma = true
+line_length = 100
+multi_line_output = 3
 profile = "google"
+split_on_trailing_comma = true
 src_paths = ["src", "tests"]
 
 [tool.setuptools.packages.find]
