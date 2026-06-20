@@ -38,10 +38,13 @@ install: clean venv build
 	$(PIP) install dist/$(PKG_NAME)-*.tar.gz
 	pre-commit install
 
+check_dist: build
+	$(PYTHON_VENV) -m twine check dist/*
+
 upload_to_testpypi: build
-	$(PYTHON_VENV) -m twine upload --repository testpypi dist/*
+	$(PYTHON_VENV) -m twine upload --verbose --repository testpypi dist/*
 
 upload_to_pypi: build
-	$(PYTHON_VENV) -m twine upload --repository pypi dist/*
+	$(PYTHON_VENV) -m twine upload --verbose --repository pypi dist/*
 
 all: install test

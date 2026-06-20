@@ -4,10 +4,9 @@ requires = ["setuptools>=42", "wheel"]
 
 [project]
 authors = [
-  {name = "Konstantin Fadeev", email = "fadeev@legalact.pro"}
+  {name = "Konstantin Fadeev", email = "jredkiy@yandex.ru"}
 ]
 classifiers = [
-  "License :: OSI Approved :: LGPL-2.1 License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3"
 ]
@@ -16,7 +15,8 @@ dependencies = [
   'PyYAML>=6.0.3'
 ]
 description = "OpenAPI specification validator and converter to Marshmallow schemas."
-license = {file = "LICENSE"}
+license = "LGPL-2.1-only"
+license-files = ["LICENSE.txt"]
 name = "Schema-First"
 readme = "README.md"
 requires-python = ">=3.13"
