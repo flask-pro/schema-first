@@ -19,3 +19,4 @@ class OperationObjectSchema(DocStringFields, BaseSchema):
     deprecated = fields.Boolean()
     servers = fields.Nested(ServerObjectSchema, many=True)
     parameters = fields.Nested(ParameterObjectSchema, many=True)
+    security = fields.List(fields.Dict(keys=fields.String(), values=fields.List(fields.String())))

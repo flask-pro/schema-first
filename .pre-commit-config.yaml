@@ -25,7 +25,7 @@ repos:
   - id: python-use-type-annotations
   - id: text-unicode-replacement-char
 - repo: https://github.com/pycqa/isort
-  rev: 8.0.1
+  rev: 9.0.0a3
   hooks:
   - id: isort
 - repo: https://github.com/asottile/pyupgrade
@@ -38,7 +38,7 @@ repos:
   hooks:
   - id: no_implicit_optional
 - repo: https://github.com/psf/black
-  rev: 26.1.0
+  rev: 26.5.1
   hooks:
   - id: black
 - repo: https://github.com/pre-commit/pygrep-hooks

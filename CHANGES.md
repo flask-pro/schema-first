@@ -1,3 +1,7 @@
+## Version 0.14.0
+
+* Add security object schemes.
+
 ## Version 0.13.1
 
 * Add a check to ensure that the path parameters match the list of allowed parameter schemes.

@@ -18,6 +18,7 @@ pytest_plugins = (
     'tests.objects.media_type_object.conftest',
     'tests.objects.openapi_object.conftest',
     'tests.objects.operation_object.conftest',
+    'tests.objects.operation_object.security_requirement_object.conftest',
     'tests.objects.path_item_object.conftest',
     'tests.objects.path_item_object.parameter_object.conftest',
     'tests.objects.paths_object.conftest',
@@ -30,6 +31,7 @@ pytest_plugins = (
     'tests.objects.schema_object.boolean_field.conftest',
     'tests.objects.schema_object.number_field.conftest',
     'tests.objects.schema_object.integer_field.conftest',
+    'tests.objects.security_scheme_object.conftest',
     'tests.objects.server_object.conftest',
     'tests.objects.tag_object.conftest',
 )

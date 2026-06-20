@@ -6,3 +6,6 @@ FLOAT_FORMATS = ('float', 'double')
 RE_VERSION = r'^[0-9]+.[0-9]+.[0-9]+$'
 RE_SERVER_URL = r'^((http|https)://)|(/)*$'
 LOCATION_PARAMETER = ('query', 'querystring', 'header', 'path', 'cookie')
+TYPE_AUTH_METHODS = ['apiKey', 'http', 'mutualTLS', 'oauth2', 'openIdConnect']
+HTTP_AUTH_SCHEMES = ['Basic', 'Bearer']
+API_KEY_LOCATIONS = ['query', 'header', 'cookie']
