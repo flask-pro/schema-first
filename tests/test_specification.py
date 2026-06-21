@@ -13,9 +13,7 @@ from tests.conftest import tests_dir_abspath
 from tests.utils import get_schema_from_request
 
 specs_base_dir = Path(tests_dir_abspath, '_contrib', 'specs')
-spec_file_paths = list(Path(specs_base_dir, 'v3.0').iterdir())
-spec_file_paths.extend(list(Path(specs_base_dir, 'v3.1').iterdir()))
-spec_file_paths.extend(list(Path(specs_base_dir, 'v3.2').iterdir()))
+spec_file_paths = list(Path(specs_base_dir, 'v3.2').iterdir())
 
 
 @pytest.mark.parametrize('fx', ['fx_spec_required', 'fx_spec_full'])

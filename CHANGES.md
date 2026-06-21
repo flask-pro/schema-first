@@ -1,3 +1,7 @@
+## Version 0.14.1
+
+* Add few small fixes.
+
 ## Version 0.14.0
 
 * Add security object schemes.
