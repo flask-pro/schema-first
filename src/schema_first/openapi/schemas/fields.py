@@ -2,7 +2,7 @@ from marshmallow import fields
 from marshmallow import validate
 
 ENDPOINT_FIELD = fields.String(
-    required=True, validate=validate.Regexp(r'^[/][0-9a-zA-Z-_{}/?.]*[^/]$')
+    required=True, validate=validate.Regexp(r'^/[.a-zA-Z0-9/{}_-]*[?]{0,1}[a-zA-Z0-9/=&_-]*$')
 )
 HTTP_CODE_FIELD = fields.String(required=True, validate=validate.Regexp(r'^[1-5]{1}\d{2}|default$'))
 SUMMARY_FIELD = fields.String(validate=validate.Length(min=1, max=150))
