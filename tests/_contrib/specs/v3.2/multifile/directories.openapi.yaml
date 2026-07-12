@@ -1,0 +1,161 @@
+directories:
+  parameters:
+  - $ref: '#/components/parameters/dir_name'
+  post:
+    security:
+    - bearerAuth: []
+    tags:
+    - directories
+    operationId: create_row
+    summary: Создает запись в справочнике
+    requestBody:
+      $ref: '#/components/requestBodies/CreateRow'
+    responses:
+      '201':
+        $ref: '#/components/responses/CreatedRow'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  get:
+    parameters:
+    - $ref: parameters.openapi.yaml#/components/parameters/include_metadata
+    - $ref: parameters.openapi.yaml#/components/parameters/page
+    - $ref: parameters.openapi.yaml#/components/parameters/per_page
+    - $ref: parameters.openapi.yaml#/components/parameters/id
+    - $ref: '#/components/parameters/value'
+    tags:
+    - directories
+    operationId: read_rows
+    summary: Возвращает список записей из справочника
+    responses:
+      '200':
+        $ref: '#/components/responses/RowList'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  patch:
+    security:
+    - bearerAuth: []
+    tags:
+    - directories
+    operationId: update_row
+    summary: Обновляет данные записи в справочнике
+    requestBody:
+      $ref: '#/components/requestBodies/UpdateRow'
+    responses:
+      '200':
+        $ref: '#/components/responses/UpdatedRow'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  delete:
+    security:
+    - bearerAuth: []
+    tags:
+    - directories
+    operationId: delete_row
+    summary: Удаляет приём
+    requestBody:
+      $ref: openapi.yaml#/components/requestBodies/DeleteObject
+    responses:
+      '204':
+        $ref: openapi.yaml#/components/responses/EmptyBody
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+components:
+  parameters:
+    dir_name:
+      name: dir_name
+      in: path
+      required: true
+      description: |
+        Имя справочника.
+
+        Доступные справочники:
+        * `sources` - Источники документов.
+      schema:
+        type: string
+        enum: [sources]
+    value:
+      name: value
+      in: query
+      description: Значение в справочнике.
+      schema:
+        $ref: '#/components/schemas/VALUE'
+  schemas:
+    VALUE:
+      type: string
+      nullable: false
+      maxLength: 250
+      example: Значение
+      description: Значение в справочнике.
+    Row:
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - value
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        value:
+          $ref: '#/components/schemas/VALUE'
+    NewRow:
+      additionalProperties: false
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/VALUE'
+    UpdateRow:
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        value:
+          $ref: '#/components/schemas/VALUE'
+  requestBodies:
+    CreateRow:
+      description: Создание новой записи в справочнике.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewRow'
+    UpdateRow:
+      description: Изменение записи в справочнике.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateRow'
+  responses:
+    CreatedRow:
+      description: Создание новой записи.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Row'
+    RowList:
+      description: Список записей справочника.
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            type: object
+            required:
+            - items
+            properties:
+              _metadata:
+                $ref: openapi.yaml#/components/schemas/Metadata
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Row'
+    UpdatedRow:
+      description: Изменение существующего приёма в системе.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Row'

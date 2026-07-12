@@ -19,8 +19,8 @@ license = "LGPL-2.1-only"
 license-files = ["LICENSE.txt"]
 name = "Schema-First"
 readme = "README.md"
-requires-python = ">=3.13"
-version = "0.14.1"
+requires-python = ">=3.14"
+version = "0.14.2"
 
 [project.optional-dependencies]
 dev = [

@@ -1,0 +1,25 @@
+CORS:
+  summary: CORS support
+  description: Enable CORS by returning correct headers
+  tags:
+  - CORS
+  responses:
+    '200':
+      $ref: '#/components/responses/CORS'
+    default:
+      $ref: openapi.yaml#/components/responses/CommonError
+components:
+  responses:
+    CORS:
+      description: Default response for CORS method
+      headers:
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+        Access-Control-Allow-Methods:
+          schema:
+            type: string
+        Access-Control-Allow-Headers:
+          schema:
+            type: string
+      content: {}

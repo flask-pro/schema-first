@@ -1,0 +1,162 @@
+directories-factors:
+  post:
+    security:
+    - bearerAuth: []
+    tags:
+    - directories
+    operationId: create_factor
+    summary: Создает запись в справочнике факторов
+    requestBody:
+      $ref: '#/components/requestBodies/NewFactorRequest'
+    responses:
+      '201':
+        $ref: '#/components/responses/NewFactorResponse'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  get:
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: parameters.openapi.yaml#/components/parameters/include_metadata
+    - $ref: parameters.openapi.yaml#/components/parameters/page
+    - $ref: parameters.openapi.yaml#/components/parameters/per_page
+    - $ref: parameters.openapi.yaml#/components/parameters/id
+    - $ref: '#/components/parameters/unique_name'
+    - $ref: '#/components/parameters/value'
+    tags:
+    - directories
+    operationId: read_factors
+    summary: Возвращает список записей из справочника
+    responses:
+      '200':
+        $ref: '#/components/responses/FactorList'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  patch:
+    security:
+    - bearerAuth: []
+    tags:
+    - directories
+    operationId: update_factor
+    summary: Обновляет данные записи в справочнике факторов
+    requestBody:
+      $ref: '#/components/requestBodies/UpdateFactorRequest'
+    responses:
+      '200':
+        $ref: '#/components/responses/UpdatedFactorResponse'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  delete:
+    security:
+    - bearerAuth: []
+    tags:
+    - directories
+    operationId: delete_factor
+    summary: Удаляет запись в справочнике факторов
+    requestBody:
+      $ref: openapi.yaml#/components/requestBodies/DeleteObject
+    responses:
+      '204':
+        $ref: openapi.yaml#/components/responses/EmptyBody
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+components:
+  parameters:
+    unique_name:
+      name: unique_name
+      in: query
+      description: Уникальное имя записи в справочнике факторов.
+      schema:
+        $ref: fields.openapi.yaml#/components/schemas/UNIQUE_NAME
+    value:
+      name: value
+      in: query
+      description: Значение в справочнике факторов.
+      schema:
+        $ref: '#/components/schemas/VALUE'
+  schemas:
+    VALUE:
+      type: string
+      nullable: false
+      maxLength: 250
+      example: Значение
+      description: Значение в справочнике факторов.
+    Factor:
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - unique_name
+      - value
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        unique_name:
+          $ref: fields.openapi.yaml#/components/schemas/UNIQUE_NAME
+        value:
+          $ref: '#/components/schemas/VALUE'
+    NewFactor:
+      additionalProperties: false
+      type: object
+      required:
+      - unique_name
+      - value
+      properties:
+        unique_name:
+          $ref: fields.openapi.yaml#/components/schemas/UNIQUE_NAME
+        value:
+          $ref: '#/components/schemas/VALUE'
+    UpdateFactor:
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        value:
+          $ref: '#/components/schemas/VALUE'
+  requestBodies:
+    NewFactorRequest:
+      description: Создание новой записи в справочнике факторов.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewFactor'
+    UpdateFactorRequest:
+      description: Изменение записи в справочнике факторов.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateFactor'
+  responses:
+    NewFactorResponse:
+      description: Создание новой записи в справочнике факторов.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Factor'
+    FactorList:
+      description: Список записей справочника факторов.
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            type: object
+            required:
+            - items
+            properties:
+              _metadata:
+                $ref: openapi.yaml#/components/schemas/Metadata
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Factor'
+    UpdatedFactorResponse:
+      description: Изменение существующей записи в справочнике факторов.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Factor'

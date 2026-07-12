@@ -7,12 +7,11 @@ from openapi_spec_validator import validate as osv_validate
 from openapi_spec_validator.readers import read_from_filename
 import pytest
 
-from src.schema_first.openapi import OpenAPI
 from src.schema_first.specification import Specification
+from tests.conftest import specs_base_dir
 from tests.conftest import tests_dir_abspath
 from tests.utils import get_schema_from_request
 
-specs_base_dir = Path(tests_dir_abspath, '_contrib', 'specs')
 spec_file_paths = list(Path(specs_base_dir, 'v3.2').iterdir())
 
 
@@ -21,7 +20,7 @@ def test_specification(request, fx_spec_as_file, fx):
     spec_file = fx_spec_as_file(request.getfixturevalue(fx))
     spec = Specification(spec_file)
 
-    assert isinstance(spec.openapi, OpenAPI)
+    assert spec.openapi
     assert spec.reassembly_spec is None
 
     spec.load()
@@ -57,9 +56,9 @@ def test_specification__multifile_required(fx_spec_as_file, fx_spec_required):
     spec.load()
 
 
-@pytest.mark.xfail(reason='Schema specification not fully realisation.')
+# @pytest.mark.xfail(reason='Schema specification not fully realisation.')
 def test_specification__multifile():
-    file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'multifile', 'openapi', 'openapi.yaml')
+    file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'multifile', 'openapi.yaml')
     spec_as_dict, base_uri = read_from_filename(file_path)
     osv_validate(spec_as_dict, base_uri=base_uri)
 

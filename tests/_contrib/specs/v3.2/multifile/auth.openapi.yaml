@@ -1,0 +1,657 @@
+auth-login:
+  get:
+    security:
+    - BasicAuth: []
+    tags:
+    - auth
+    operationId: login
+    summary: Создает access_token и refresh_token
+    description: |
+      Применяемый тип авторизации: HTTP Basic.
+      Аутентификация пользователя происходит по логину и паролю.
+      После ввода логина и пароля пользователю выдается два токена access и refresh.
+      Access токен служит для авторизации пользователя в сервисе, продолжительность жизни 1 день.
+      Refresh токен служит для обновления access токена срок жизни 30 дней.
+      При обращение за refresh токеном выдаются сразу два новых токена access и refresh.
+      Предыдущие теряют свою актуальность.'
+    responses:
+      '200':
+        $ref: '#/components/responses/AccessRefreshToken'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+auth-refresh:
+  get:
+    security:
+    - bearerAuth: []
+    tags:
+    - auth
+    operationId: refresh
+    summary: Обновляет токены авторизации
+    description: Продление жизни токенов, авторизация производится refresh_token.
+    responses:
+      '200':
+        $ref: '#/components/responses/AccessRefreshToken'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+auth-logout:
+  get:
+    security:
+    - bearerAuth: []
+    tags:
+    - auth
+    operationId: logout
+    summary: Осуществляет logout
+    description: При обращение на данный эндпоинт ранее выданные токены авторизации перестают быть актуальными.
+    responses:
+      '204':
+        $ref: openapi.yaml#/components/responses/EmptyBody
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+auth-profile:
+  get:
+    security:
+    - bearerAuth: []
+    tags:
+    - auth
+    operationId: profile
+    summary: Получение профиля пользователя
+    responses:
+      '200':
+        $ref: '#/components/responses/User'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+auth-pat:
+  post:
+    security:
+    - bearerAuth: []
+    tags:
+    - auth
+    operationId: create_pat
+    summary: Создаёт персональный токен.
+    description: Продолжительность жизни токена не более 10 лет.
+    requestBody:
+      $ref: '#/components/requestBodies/CreatePAT'
+    responses:
+      '201':
+        $ref: '#/components/responses/CreatedPAT'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  get:
+    parameters:
+    - $ref: parameters.openapi.yaml#/components/parameters/eq__id
+    - $ref: '#/components/parameters/eq__user_id'
+    security:
+    - bearerAuth: []
+    tags:
+    - auth
+    operationId: read_pat
+    summary: Получить список персональных токенов
+    responses:
+      '200':
+        $ref: '#/components/responses/PATsList'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  delete:
+    security:
+    - bearerAuth: []
+    tags:
+    - auth
+    operationId: delete_pat
+    summary: Удаляет персональный токен
+    requestBody:
+      $ref: openapi.yaml#/components/requestBodies/DeleteObject
+    responses:
+      '204':
+        $ref: openapi.yaml#/components/responses/EmptyBody
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+auth-users:
+  post:
+    security:
+    - bearerAuth: []
+    tags:
+    - users
+    operationId: create_user
+    summary: Создаёт пользователя.
+    requestBody:
+      $ref: '#/components/requestBodies/CreateUser'
+    responses:
+      '201':
+        $ref: '#/components/responses/CreatedUser'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  get:
+    parameters:
+    - $ref: parameters.openapi.yaml#/components/parameters/include_metadata
+    - $ref: parameters.openapi.yaml#/components/parameters/page
+    - $ref: parameters.openapi.yaml#/components/parameters/per_page
+    - $ref: parameters.openapi.yaml#/components/parameters/eq__id
+    security:
+    - bearerAuth: []
+    tags:
+    - users
+    operationId: read_users
+    summary: Получает список пользователей из базы данных.
+    responses:
+      '200':
+        $ref: '#/components/responses/UserList'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  patch:
+    security:
+    - bearerAuth: []
+    tags:
+    - users
+    operationId: update_user
+    summary: Обновляет данные пользователя.
+    requestBody:
+      $ref: '#/components/requestBodies/UpdateUser'
+    responses:
+      '200':
+        $ref: '#/components/responses/UpdatedUser'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  delete:
+    security:
+    - bearerAuth: []
+    tags:
+    - users
+    operationId: delete_user
+    summary: Удаляет пользователя из базы.
+    requestBody:
+      $ref: openapi.yaml#/components/requestBodies/DeleteObject
+    responses:
+      '204':
+        $ref: openapi.yaml#/components/responses/EmptyBody
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+auth-roles:
+  post:
+    security:
+    - bearerAuth: []
+    tags:
+    - roles
+    operationId: create_role
+    summary: Создаёт роль.
+    requestBody:
+      $ref: '#/components/requestBodies/CreateRole'
+    responses:
+      '201':
+        $ref: '#/components/responses/CreatedRole'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  get:
+    parameters:
+    - $ref: parameters.openapi.yaml#/components/parameters/include_metadata
+    - $ref: parameters.openapi.yaml#/components/parameters/page
+    - $ref: parameters.openapi.yaml#/components/parameters/per_page
+    - $ref: parameters.openapi.yaml#/components/parameters/eq__id
+    - $ref: '#/components/parameters/eq__unique_name'
+    security:
+    - bearerAuth: []
+    tags:
+    - roles
+    operationId: read_roles
+    summary: Получает список ролей.
+    responses:
+      '200':
+        $ref: '#/components/responses/RoleList'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  patch:
+    security:
+    - bearerAuth: []
+    tags:
+    - roles
+    operationId: update_role
+    summary: Обновляет данные роли.
+    requestBody:
+      $ref: '#/components/requestBodies/UpdateRole'
+    responses:
+      '200':
+        $ref: '#/components/responses/UpdatedRole'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  delete:
+    security:
+    - bearerAuth: []
+    tags:
+    - roles
+    operationId: delete_role
+    summary: Удаляет роль из базы.
+    requestBody:
+      $ref: openapi.yaml#/components/requestBodies/DeleteObject
+    responses:
+      '204':
+        $ref: openapi.yaml#/components/responses/EmptyBody
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+auth-roles-permissions:
+  post:
+    security:
+    - bearerAuth: []
+    tags:
+    - roles
+    operationId: add_permission_to_role
+    summary: Добавляет разрешение для роли.
+    requestBody:
+      $ref: '#/components/requestBodies/AddPermissionToRole'
+    responses:
+      '201':
+        $ref: '#/components/responses/CreatedRole'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  patch:
+    security:
+    - bearerAuth: []
+    tags:
+    - roles
+    operationId: delete_permission_to_role
+    summary: Удаляет разрешение для роли.
+    requestBody:
+      $ref: '#/components/requestBodies/AddPermissionToRole'
+    responses:
+      '200':
+        $ref: '#/components/responses/CreatedRole'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+components:
+  schemas:
+    ACCESS_TOKEN:
+      type: string
+      nullable: false
+      description: Токен доступа.
+    REFRESH_TOKEN:
+      type: string
+      nullable: false
+      description: Токен обновления.
+    LOGIN:
+      type: string
+      nullable: false
+      example: '70000000000'
+      description: В качестве логина используется телефонный номер в формате Е.164.
+      pattern: ^(7|8)\d{10}$
+    PASSWORD:
+      type: string
+      nullable: true
+      example: super_secret
+      description: Пароль пользователя.
+    PAT_TOKEN:
+      type: string
+      nullable: false
+      description: Токен PAT для доступа к сервисам приложения.
+    EXPIRATION:
+      type: string
+      format: date-time
+      example: '2023-05-19T12:14:16Z'
+      nullable: false
+      description: Дата окочания срока жизни токена. Не более 10 лет.
+    IS_GLOBAL_BLOCKED:
+      type: boolean
+      nullable: false
+      description: Признак глобальной блокировки пользователя.
+    SORT_LOGIN:
+      type: string
+      enum:
+      - asc
+      - desc
+      description: Значение для сортировки по логину пользователя.
+    PERMISSION:
+      type: string
+      nullable: false
+      example: create__role
+      description: В качестве имени пользователя используется телефонный номер в формате Е.164.
+      pattern: ^(create__|read__|update__|delete__)[a-z0-9-_]*$
+    PERMISSIONS:
+      type: array
+      items:
+        $ref: '#/components/schemas/PERMISSION'
+    Tokens:
+      type: object
+      additionalProperties: false
+      required:
+      - access_token
+      - refresh_token
+      properties:
+        access_token:
+          $ref: '#/components/schemas/ACCESS_TOKEN'
+        refresh_token:
+          $ref: '#/components/schemas/REFRESH_TOKEN'
+    NewPAT:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - expiration
+      properties:
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/VALUE
+        expiration:
+          $ref: '#/components/schemas/EXPIRATION'
+    PAT:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - name
+      - expiration
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/VALUE
+        expiration:
+          $ref: '#/components/schemas/EXPIRATION'
+    FirstViewPAT:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - token
+      - name
+      - expiration
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        token:
+          $ref: '#/components/schemas/PAT_TOKEN'
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/VALUE
+        expiration:
+          $ref: '#/components/schemas/EXPIRATION'
+    NewUser:
+      additionalProperties: false
+      type: object
+      required:
+      - login
+      - password
+      properties:
+        login:
+          $ref: '#/components/schemas/LOGIN'
+        username:
+          $ref: fields.openapi.yaml#/components/schemas/UNIQUE_NAME
+        first_name:
+          $ref: fields.openapi.yaml#/components/schemas/FIRST_NAME
+        last_name:
+          $ref: fields.openapi.yaml#/components/schemas/LAST_NAME
+        description:
+          $ref: fields.openapi.yaml#/components/schemas/DESCRIPTION
+        password:
+          $ref: '#/components/schemas/PASSWORD'
+        role_ids:
+          type: array
+          items:
+            $ref: fields.openapi.yaml#/components/schemas/ID
+    User:
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        login:
+          $ref: '#/components/schemas/LOGIN'
+        username:
+          $ref: fields.openapi.yaml#/components/schemas/UNIQUE_NAME
+        first_name:
+          $ref: fields.openapi.yaml#/components/schemas/FIRST_NAME
+        last_name:
+          $ref: fields.openapi.yaml#/components/schemas/LAST_NAME
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        description:
+          $ref: fields.openapi.yaml#/components/schemas/DESCRIPTION
+        is_global_blocked:
+          $ref: '#/components/schemas/IS_GLOBAL_BLOCKED'
+        permissions:
+          $ref: '#/components/schemas/PERMISSIONS'
+    UpdateUser:
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        username:
+          $ref: fields.openapi.yaml#/components/schemas/UNIQUE_NAME
+        first_name:
+          $ref: fields.openapi.yaml#/components/schemas/FIRST_NAME
+        last_name:
+          $ref: fields.openapi.yaml#/components/schemas/LAST_NAME
+        role_ids:
+          type: array
+          items:
+            $ref: fields.openapi.yaml#/components/schemas/ID
+        description:
+          $ref: fields.openapi.yaml#/components/schemas/DESCRIPTION
+        is_global_blocked:
+          $ref: '#/components/schemas/IS_GLOBAL_BLOCKED'
+    NewRole:
+      additionalProperties: false
+      type: object
+      required:
+      - unique_name
+      - name
+      properties:
+        unique_name:
+          $ref: fields.openapi.yaml#/components/schemas/UNIQUE_NAME
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/NAME
+        description:
+          $ref: fields.openapi.yaml#/components/schemas/DESCRIPTION
+    Role:
+      additionalProperties: false
+      type: object
+      required:
+      - unique_name
+      - name
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        unique_name:
+          $ref: fields.openapi.yaml#/components/schemas/UNIQUE_NAME
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/NAME
+        description:
+          $ref: fields.openapi.yaml#/components/schemas/DESCRIPTION
+        permissions:
+          $ref: '#/components/schemas/PERMISSIONS'
+    UpdatedRole:
+      additionalProperties: false
+      type: object
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/NAME
+        description:
+          $ref: fields.openapi.yaml#/components/schemas/DESCRIPTION
+    PermissionToRole:
+      additionalProperties: false
+      type: object
+      required:
+      - role_id
+      - permission
+      properties:
+        role_id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        permission:
+          $ref: '#/components/schemas/PERMISSION'
+    RoleToUser:
+      additionalProperties: false
+      type: object
+      required:
+      - user_id
+      - role_id
+      properties:
+        user_id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        role_id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+  parameters:
+    eq__unique_name:
+      name: eq__unique_name
+      in: query
+      description: Уникальное название объекта.
+      schema:
+        $ref: fields.openapi.yaml#/components/schemas/UNIQUE_NAME
+    eq__user_id:
+      in: query
+      name: eq__user_id
+      description: ID пользователя.
+      schema:
+        $ref: fields.openapi.yaml#/components/schemas/ID
+    sort_username:
+      in: query
+      name: sort_username
+      description: Логин пользователя.
+      schema:
+        $ref: '#/components/schemas/SORT_LOGIN'
+  requestBodies:
+    CreatePAT:
+      description: Создание постоянного токена для пользователя.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewPAT'
+    CreateUser:
+      description: Создание нового пользователя в базе.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewUser'
+    UpdateUser:
+      description: Обновление пользователя в базе.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateUser'
+    CreateRole:
+      description: Создание новой роли в базе.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewRole'
+    UpdateRole:
+      description: Обновление роли в базе.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdatedRole'
+    AddPermissionToRole:
+      description: Добавление разрешения роли.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PermissionToRole'
+  responses:
+    AccessRefreshToken:
+      description: Access_token и Refresh_token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Tokens'
+    CreatedPAT:
+      description: Постоянный токен пользователя.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FirstViewPAT'
+    PATsList:
+      description: Список созданых постоянных токенов.
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            type: object
+            required:
+            - items
+            properties:
+              _metadata:
+                $ref: openapi.yaml#/components/schemas/Metadata
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PAT'
+    User:
+      description: Профиль пользователя.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    UserList:
+      description: Список созданых пользователей.
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            type: object
+            required:
+            - items
+            properties:
+              _metadata:
+                $ref: openapi.yaml#/components/schemas/Metadata
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    CreatedUser:
+      description: Созданый пользователь.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    UpdatedUser:
+      description: Обновленые данные пользователя в системе.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    RoleList:
+      description: Список ролей.
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            type: object
+            required:
+            - items
+            properties:
+              _metadata:
+                $ref: openapi.yaml#/components/schemas/Metadata
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+    CreatedRole:
+      description: Создание новой роли в системе.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Role'
+    UpdatedRole:
+      description: Изменение существующей роли в системе.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Role'

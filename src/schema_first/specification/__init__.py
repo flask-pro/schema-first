@@ -1,4 +1,3 @@
-from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -7,8 +6,10 @@ from marshmallow import INCLUDE
 from marshmallow import RAISE
 from marshmallow import Schema
 from marshmallow import validate
+from marshmallow.fields import Field
 
-from ..openapi import OpenAPI
+from schema_first.openapi import OpenAPI
+from schema_first.specification.spilli_api import ConverterOpenAPIToSpilliAPI
 
 FIELDS_VIA_TYPES = {
     'boolean': fields.Boolean,
@@ -34,6 +35,7 @@ FIELDS_VIA_FORMATS = {
 class Specification:
     def __init__(self, spec_file: Path | str):
         self.openapi = OpenAPI(spec_file)
+        self.spilli_api = None
         self.reassembly_spec = None
 
     @staticmethod
@@ -132,13 +134,17 @@ class Specification:
 
         return Schema.from_dict(marshmallow_schema)
 
-    def _convert_array_field(self, open_api_schema: dict) -> type[Schema]:
+    def _convert_array_field(self, open_api_schema: dict) -> Field:
         array_item_schema = open_api_schema['items']
-        array_schema = self._convert_object_field(array_item_schema)
-        array_schema.opts.many = True
-        return array_schema
+        if array_item_schema['type'] == 'object':
+            nested_field = self._convert_object_field(array_item_schema)
+            array_field = fields.Nested(nested_field, many=True)
+        else:
+            nested_field = FIELDS_VIA_TYPES[array_item_schema['type']]()
+            array_field = fields.List(nested_field)
+        return array_field
 
-    def _reassembly_of_schemas(self, obj: Any) -> Any:
+    def _reassembly_of_schemas(self, obj: Any) -> None:
         if isinstance(obj, dict):
             for k, v in obj.items():
                 # Checking for object type is needed to skip already resolved schemes.
@@ -148,10 +154,10 @@ class Specification:
                 else:
                     self._reassembly_of_schemas(v)
 
-    def load(self) -> 'Specification':
+    def load(self) -> Specification:
         self.openapi.load()
-        self.reassembly_spec = deepcopy(self.openapi.raw_spec)
 
+        self.reassembly_spec = ConverterOpenAPIToSpilliAPI(self.openapi.raw_spec).convert()
         self._reassembly_of_schemas(self.reassembly_spec)
 
         return self

@@ -1,0 +1,401 @@
+legal-acts:
+  post:
+    security:
+    - bearerAuth: []
+    tags:
+    - legal_acts
+    operationId: create_legal_act
+    summary: Создаёт НПА
+    requestBody:
+      $ref: '#/components/requestBodies/NewLegalActRequest'
+    responses:
+      '201':
+        $ref: '#/components/responses/LegalActResponse'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  get:
+    security:
+    - {}
+    parameters:
+    - $ref: parameters.openapi.yaml#/components/parameters/include_metadata
+    - $ref: parameters.openapi.yaml#/components/parameters/page
+    - $ref: parameters.openapi.yaml#/components/parameters/per_page
+    - $ref: parameters.openapi.yaml#/components/parameters/eq__id
+    - $ref: parameters.openapi.yaml#/components/parameters/in__id
+    - $ref: parameters.openapi.yaml#/components/parameters/fields
+    - $ref: parameters.openapi.yaml#/components/parameters/contain__title
+    - $ref: parameters.openapi.yaml#/components/parameters/q
+    - $ref: parameters.openapi.yaml#/components/parameters/sort__signature_date
+    - $ref: parameters.openapi.yaml#/components/parameters/ge__signature_date
+    - $ref: parameters.openapi.yaml#/components/parameters/le__signature_date
+    - $ref: parameters.openapi.yaml#/components/parameters/eq__legal_act_type_id
+    - $ref: parameters.openapi.yaml#/components/parameters/eq__authority_id
+    - $ref: parameters.openapi.yaml#/components/parameters/eq__authority_name_id
+    - $ref: parameters.openapi.yaml#/components/parameters/eq__number
+    - $ref: parameters.openapi.yaml#/components/parameters/eq__territory_id
+    tags:
+    - legal_acts
+    operationId: read_legal_acts
+    summary: Возвращает список НПА.
+    responses:
+      '200':
+        $ref: '#/components/responses/LegalActList'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  patch:
+    security:
+    - bearerAuth: []
+    tags:
+    - legal_acts
+    operationId: update_legal_act
+    summary: Редактирование НПА
+    requestBody:
+      $ref: '#/components/requestBodies/UpdateLegalActRequest'
+    responses:
+      '200':
+        $ref: '#/components/responses/LegalActResponse'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  delete:
+    security:
+    - bearerAuth: []
+    tags:
+    - legal_acts
+    operationId: delete_legal_act
+    summary: Удаляет НПА
+    requestBody:
+      $ref: openapi.yaml#/components/requestBodies/DeleteObject
+    responses:
+      '204':
+        $ref: openapi.yaml#/components/responses/EmptyBody
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+
+legal-acts-short-link:
+  parameters:
+  - name: short_link
+    in: path
+    required: true
+    description: Идентификатор для краткой ссылки.
+    schema:
+      $ref: fields.openapi.yaml#/components/schemas/SHORT_LINK
+  get:
+    tags:
+    - legal_acts
+    operationId: resolve_short_link
+    summary: Возвращает НПА по его краткой ссылке.
+    responses:
+      '200':
+        $ref: '#/components/responses/LegalActResponse'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+legal-acts-popular:
+  get:
+    tags:
+    - legal_acts
+    operationId: get_popular
+    summary: Возвращает список популярных НПА
+    description: Возвращает список 5 самых популярных НПА за последнюю неделю.
+    responses:
+      '200':
+        $ref: '#/components/responses/Populars'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+legal-acts-this-days:
+  get:
+    parameters:
+    - $ref: parameters.openapi.yaml#/components/parameters/start_date_of_day
+    - $ref: parameters.openapi.yaml#/components/parameters/end_date_of_day
+    tags:
+    - legal_acts
+    operationId: get_this_days
+    summary: Список НПА принятых в этот день
+    description: Возвращает количество НПА принятых в этот день для каждого учреждения.
+    responses:
+      '200':
+        $ref: '#/components/responses/ThisDays'
+      default:
+        $ref: openapi.yaml#/components/responses/CommonError
+  options:
+    $ref: CORS.openapi.yaml#/CORS
+components:
+  schemas:
+    NUMBER:
+      type: string
+      nullable: true
+      description: Номер НПА.
+    SIGNATURE_DATE:
+      type: string
+      nullable: true
+      format: date-time
+      description: Дата подписания НПА в формате "%Y-%m-%dT%H:%M:%SZ"
+    IS_PUBLIC:
+      type: boolean
+      nullable: false
+      description: Признак публикации объекта.
+    TEXT_ITEM:
+      additionalProperties: false
+      type: object
+      required:
+      - type
+      - text
+      properties:
+        type:
+          type: string
+          enum:
+          - h1
+          - h2
+          - h3
+          - p
+        text:
+          type: string
+          minLength: 1
+          maxLength: 2000
+    TEXT:
+      type: array
+      description: Текст НПА.
+      items:
+        $ref: '#/components/schemas/TEXT_ITEM'
+    UPDATABLE_TEXT:
+      type: array
+      nullable: true
+      description: Текст НПА.
+      items:
+        $ref: '#/components/schemas/TEXT_ITEM'
+    NUMBER_OF_VIEWS:
+      type: number
+      nullable: false
+      description: Количество просмотров НПА.
+    NUMBER_OF_LEGAL_ACTS:
+      type: number
+      nullable: false
+      description: Количество НПА.
+    AuthorityName:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - name
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/NAME
+    DocType:
+      type: object
+      additionalProperties: false
+      description: Тип НПА из стороннего сервиса.
+      required:
+      - id
+      - external_id
+      - value
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        external_id:
+          $ref: fields.openapi.yaml#/components/schemas/EXTERNAL_ID
+        value:
+          $ref: fields.openapi.yaml#/components/schemas/VALUE
+    NewLegalAct:
+      type: object
+      additionalProperties: false
+      required:
+      - title
+      properties:
+        title:
+          $ref: fields.openapi.yaml#/components/schemas/TITLE
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/LEGAL_ACT_NAME
+        description:
+          $ref: fields.openapi.yaml#/components/schemas/DESCRIPTION
+        number:
+          $ref: '#/components/schemas/NUMBER'
+        signature_date:
+          $ref: '#/components/schemas/SIGNATURE_DATE'
+        external_id:
+          $ref: fields.openapi.yaml#/components/schemas/EXTERNAL_ID
+        source_id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        pdf_file_id:
+          $ref: fields.openapi.yaml#/components/schemas/FILE_ID
+        legal_act_type_id:
+          description: ID типа документа.
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        authority_id:
+          description: ID органа власти.
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        authority_name_id:
+          description: ID названия органа.
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        territory_id:
+          description: ID территории.
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        is_public:
+          $ref: '#/components/schemas/IS_PUBLIC'
+    UpdateLegalAct:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        title:
+          $ref: fields.openapi.yaml#/components/schemas/TITLE
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/UPDATABLE_LEGAL_ACT_NAME
+        description:
+          $ref: fields.openapi.yaml#/components/schemas/DESCRIPTION
+        number:
+          $ref: '#/components/schemas/NUMBER'
+        signature_date:
+          $ref: '#/components/schemas/SIGNATURE_DATE'
+        external_id:
+          $ref: fields.openapi.yaml#/components/schemas/UPDATABLE_EXTERNAL_ID
+        pdf_file_id:
+          $ref: fields.openapi.yaml#/components/schemas/UPDATABLE_FILE_ID
+        legal_act_type_id:
+          description: ID типа документа.
+          $ref: fields.openapi.yaml#/components/schemas/UPDATABLE_ID
+        authority_id:
+          description: ID органа власти.
+          $ref: fields.openapi.yaml#/components/schemas/UPDATABLE_ID
+        authority_name_id:
+          description: ID названия органа.
+          $ref: fields.openapi.yaml#/components/schemas/UPDATABLE_ID
+        territory_id:
+          description: ID территории.
+          $ref: fields.openapi.yaml#/components/schemas/UPDATABLE_ID
+        is_public:
+          $ref: '#/components/schemas/IS_PUBLIC'
+    LegalAct:
+      type: object
+      additionalProperties: false
+      required: [id]
+      properties:
+        id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        title:
+          $ref: fields.openapi.yaml#/components/schemas/TITLE
+        name:
+          $ref: fields.openapi.yaml#/components/schemas/LEGAL_ACT_NAME
+        description:
+          $ref: fields.openapi.yaml#/components/schemas/DESCRIPTION
+        metaname:
+          $ref: fields.openapi.yaml#/components/schemas/METANAME
+        number:
+          $ref: '#/components/schemas/NUMBER'
+        signature_date:
+          $ref: '#/components/schemas/SIGNATURE_DATE'
+        authority_name:
+          $ref: '#/components/schemas/AuthorityName'
+        legal_act_type:
+          $ref: legal-act-types.openapi.yaml#/components/schemas/LegalActType
+        pdf_file:
+          $ref: files.openapi.yaml#/components/schemas/File
+        authority:
+          $ref: fields.openapi.yaml#/components/schemas/AUTHORITY
+        territory:
+          $ref: territories.openapi.yaml#/components/schemas/Territory
+        short_link:
+          $ref: fields.openapi.yaml#/components/schemas/SHORT_LINK
+        is_public:
+          $ref: '#/components/schemas/IS_PUBLIC'
+    PopularityLegalAct:
+      additionalProperties: false
+      type: object
+      required: [title, number_of_views]
+      properties:
+        legal_act_id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        title:
+          $ref: fields.openapi.yaml#/components/schemas/TITLE
+        number_of_views:
+          $ref: '#/components/schemas/NUMBER_OF_VIEWS'
+    LegalActCounter:
+      additionalProperties: false
+      type: object
+      required: [authority_name_id, authority_name, number]
+      properties:
+        authority_name_id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        authority_name:
+          $ref: fields.openapi.yaml#/components/schemas/VALUE
+        territory_id:
+          $ref: fields.openapi.yaml#/components/schemas/ID
+        territory:
+          $ref: fields.openapi.yaml#/components/schemas/VALUE
+        number:
+          $ref: '#/components/schemas/NUMBER_OF_LEGAL_ACTS'
+  responses:
+    LegalActResponse:
+      description: Схема ответа содержащая данные НПА.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegalAct'
+    LegalActList:
+      description: Список НПА.
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            type: object
+            required:
+            - items
+            properties:
+              _metadata:
+                $ref: openapi.yaml#/components/schemas/Metadata
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LegalAct'
+    Populars:
+      description: Список популярных НПА.
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            type: object
+            required:
+            - items
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PopularityLegalAct'
+    ThisDays:
+      description: Список НПА принятых в этот день.
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            type: object
+            required:
+            - items
+            properties:
+              signature_date:
+                $ref: '#/components/schemas/SIGNATURE_DATE'
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LegalActCounter'
+  requestBodies:
+    NewLegalActRequest:
+      description: Запрос создания нового НПА.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewLegalAct'
+    UpdateLegalActRequest:
+      description: Запрос изменения НПА.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateLegalAct'

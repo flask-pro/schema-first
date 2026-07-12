@@ -1,0 +1,127 @@
+components:
+  schemas:
+    ID:
+      nullable: false
+      type: string
+      format: uuid
+      example: 789d995f-3aa0-4bf8-a77b-2f2f20868503
+      description: UUID
+    UPDATABLE_ID:
+      nullable: true
+      type: string
+      format: uuid
+      example: 789d995f-3aa0-4bf8-a77b-2f2f20868503
+      description: UUID
+    MULTIPLE_ID:
+      type: array
+      items:
+        $ref: '#/components/schemas/ID'
+    UNIQUE_NAME:
+      type: string
+      pattern: ^[a-z0-9-]+$
+      example: factors
+      description: Машиночитаемое имя объекта. Не может быть изменено.
+    FILE_ID:
+      nullable: false
+      type: string
+      format: uuid
+      example: 789d995f-3aa0-4bf8-a77b-2f2f20868503
+      description: ID файла.
+    UPDATABLE_FILE_ID:
+      nullable: true
+      type: string
+      format: uuid
+      example: 789d995f-3aa0-4bf8-a77b-2f2f20868503
+      description: ID файла.
+    VALUE:
+      type: string
+      maxLength: 1000
+      nullable: false
+      example: Название чего-то
+      description: Значение записи в справочнике.
+    DESCRIPTION:
+      type: string
+      maxLength: 1000
+      nullable: true
+      example: Описание объекта.
+      description: Описание.
+    SORT:
+      type: string
+      enum:
+      - asc
+      - desc
+      description: Значение порядка сортировки
+    DATE:
+      type: string
+      format: date-time
+      example: '2023-01-01T01:02:03Z'
+      description: Дата и время
+    EXTERNAL_ID:
+      type: string
+      nullable: false
+      description: ID объекта из внешней системы.
+    UPDATABLE_EXTERNAL_ID:
+      nullable: true
+      type: string
+      description: ID объекта из внешней системы.
+    TITLE:
+      type: string
+      nullable: false
+      description: Название НПА.
+    METANAME:
+      type: string
+      nullable: false
+      description: Название составленное из метаданных.
+    NAME:
+      type: string
+      nullable: false
+      description: Название объекта.
+    LEGAL_ACT_NAME:
+      nullable: false
+      type: string
+      description: Название документа.
+    UPDATABLE_LEGAL_ACT_NAME:
+      nullable: true
+      type: string
+      description: Название документа.
+    GENITIVE_NAME:
+      type: string
+      nullable: false
+      description: Название административно-территориальной единицы в родительном падеже.
+    SHORT_NAME:
+      type: string
+      minLength: 1
+      maxLength: 50
+      pattern: ^[А-Яа-я0-9-]+$
+      example: Президент
+      description: Краткое название для формирования короткого URL.
+    SHORT_LINK:
+      type: string
+      minLength: 1
+      maxLength: 100
+      pattern: ^[А-Яа-я0-9A-Za-z-]+$
+      example: Приказ-ГлавУпрВет-НовОбл-19-12-2025-123-АБ-В
+      description: Идентификатор для краткой ссылки на НПА.
+    AUTHORITY:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        name:
+          $ref: '#/components/schemas/NAME'
+    FIRST_NAME:
+      type: string
+      minLength: 1
+      maxLength: 50
+      pattern: ^[A-Za-zА-Яа-я-]+$
+      example: Константин
+      description: Имя пользователя.
+    LAST_NAME:
+      type: string
+      minLength: 1
+      maxLength: 20
+      pattern: ^[A-Za-zА-Яа-я-]+$
+      example: Фадеев
+      description: Фамилия пользователя.

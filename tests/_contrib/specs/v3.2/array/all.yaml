@@ -1,0 +1,34 @@
+openapi: 3.2.0
+info:
+  title: Mini API for testing Flask-First
+  version: 1.0.0
+paths:
+  /mini_endpoint:
+    post:
+      operationId: mini_endpoint
+      requestBody:
+        description: Request item.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                array:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Response item.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  array:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string

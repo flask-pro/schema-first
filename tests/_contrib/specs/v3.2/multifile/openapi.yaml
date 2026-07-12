@@ -1,0 +1,159 @@
+openapi: 3.2.0
+info:
+  title: API сервиса для выявление коррупциогенных факторов онлайн - Легалакт.
+  version: 0.0.1
+tags:
+- name: auth
+  description: Авторизация и аутентификация.
+- name: users
+  description: Управление пользователями.
+- name: roles
+  description: Управление ролями.
+- name: files
+  description: Управление файлами.
+- name: legal_acts
+  description: Управление НПА.
+- name: directories
+  description: Управление справочниками.
+- name: resolvers
+  description: Методы анализа документов.
+- name: search
+  description: Поиск в документах.
+- name: graph
+  description: Управление графом документов.
+- name: CORS
+  description: Разрешения CORS для эндпоинтов.
+paths:
+  /api/auth/login:
+    $ref: auth.openapi.yaml#/auth-login
+  /api/auth/refresh:
+    $ref: auth.openapi.yaml#/auth-refresh
+  /api/auth/logout:
+    $ref: auth.openapi.yaml#/auth-logout
+  /api/auth/profile:
+    $ref: auth.openapi.yaml#/auth-profile
+  /api/auth/pat:
+    $ref: auth.openapi.yaml#/auth-pat
+  /api/roles:
+    $ref: auth.openapi.yaml#/auth-roles
+  /api/roles/permissions:
+    $ref: auth.openapi.yaml#/auth-roles-permissions
+  /api/users:
+    $ref: auth.openapi.yaml#/auth-users
+  /api/files:
+    $ref: files.openapi.yaml#/files
+  /api/files/download/{file_id}:
+    $ref: files.openapi.yaml#/files-download
+  /api/directories/{dir_name}:
+    $ref: directories.openapi.yaml#/directories
+  /api/directories/factors:
+    $ref: factors.openapi.yaml#/directories-factors
+  /api/directories/legal-act-types:
+    $ref: legal-act-types.openapi.yaml#/directories-legal-act-type
+  /api/directories/territories:
+    $ref: territories.openapi.yaml#/territories
+  /api/directories/authorities:
+    $ref: authorities.openapi.yaml#/authorities
+  /api/directories/authorities-names:
+    $ref: authorities-names.openapi.yaml#/directories-authorities-names
+  /api/directories/administrative-units:
+    $ref: adm-units.openapi.yaml#/adm-units
+  /api/directories/edge-types:
+    $ref: edge-types.yaml#/edge-types
+  /api/legal-acts:
+    $ref: legal-acts.openapi.yaml#/legal-acts
+  /api/legal-acts/popular:
+    $ref: legal-acts.openapi.yaml#/legal-acts-popular
+  /api/legal-acts/this-days:
+    $ref: legal-acts.openapi.yaml#/legal-acts-this-days
+  /api/legal-acts/short-link/{short_link}:
+    $ref: legal-acts.openapi.yaml#/legal-acts-short-link
+  /api/resolvers/fragment:
+    $ref: resolvers.openapi.yaml#/resolvers-fragment
+  /api/resolvers/file:
+    $ref: resolvers.openapi.yaml#/resolvers-file
+  /api/graph/edges:
+    $ref: edges.yaml#/edges
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: Basic
+    bearerAuth:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      additionalProperties: false
+      type: object
+      required:
+      - code
+      - description
+      - name
+      properties:
+        code:
+          type: integer
+          minimum: 400
+          maximum: 599
+          example: 400
+          description: Код ошибки.
+        description:
+          type: string
+          example: Содержит подробное сообщение об ошибке.
+        name:
+          type: string
+          example: Краткое имя ошибки.
+    Pagination:
+      additionalProperties: false
+      type: object
+      required:
+      - page
+      - per_page
+      - pages
+      - total
+      properties:
+        page:
+          type: integer
+          example: 1
+        per_page:
+          type: integer
+          example: 30
+        pages:
+          type: integer
+          example: 1
+        total:
+          type: integer
+          example: 1
+    Metadata:
+      additionalProperties: false
+      type: object
+      required:
+      - pagination
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+  responses:
+    EmptyBody:
+      description: Тело ответа отсутствует.
+      content:
+        '*/*': {}
+    CommonError:
+      description: Сообщение об ошибке.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  requestBodies:
+    DeleteObject:
+      description: Удаление объекта из системы.
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            type: object
+            required:
+            - id
+            properties:
+              id:
+                $ref: fields.openapi.yaml#/components/schemas/ID
