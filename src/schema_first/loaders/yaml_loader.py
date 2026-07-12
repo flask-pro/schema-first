@@ -58,7 +58,7 @@ class YAMLReader:
         else:
             return
 
-    def load(self) -> 'YAMLReader':
+    def load(self) -> YAMLReader:
         root_file = self._yaml_to_dict(self.path)
         self.store[self.root_file_name] = root_file
         self.search_file(root_file)
@@ -130,7 +130,7 @@ class RefResolver:
 
         return obj
 
-    def resolving(self) -> 'RefResolver':
+    def resolving(self) -> RefResolver:
         root_file_path = self.yaml_reader.root_file_name
         root_spec = self.yaml_reader.store[root_file_path]
         self.resolved_spec = self._resolving_all_refs(root_file_path, root_spec)

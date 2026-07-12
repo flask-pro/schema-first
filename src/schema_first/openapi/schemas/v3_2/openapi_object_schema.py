@@ -57,7 +57,7 @@ class OpenAPIObjectSchema(BaseSchema):
             if param_names:
                 params_from_components = data['components'].get('parameters')
                 if params_from_components:
-                    param_names_from_components = params_from_components.key()
+                    param_names_from_components = params_from_components.keys()
 
                     if not set(param_names).issubset(set(param_names_from_components)):
                         raise ValidationError(

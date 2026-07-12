@@ -1,3 +1,8 @@
+## Version 0.14.2
+
+* Fix parameters generate schema.
+* Fix array generate schema.
+
 ## Version 0.14.1
 
 * Add few small fixes.

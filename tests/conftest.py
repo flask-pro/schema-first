@@ -8,6 +8,8 @@ import yaml
 
 tests_dir_abspath = os.path.dirname(os.path.abspath(__file__))
 
+specs_base_dir = Path(tests_dir_abspath, '_contrib', 'specs')
+
 pytest_plugins = (
     'tests.objects.components_object.conftest',
     'tests.objects.contact_object.conftest',
