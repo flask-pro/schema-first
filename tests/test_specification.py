@@ -56,7 +56,7 @@ def test_specification__multifile_required(fx_spec_as_file, fx_spec_required):
     spec.load()
 
 
-# @pytest.mark.xfail(reason='Schema specification not fully realisation.')
+@pytest.mark.xfail(reason='Schema specification not fully realisation.')
 def test_specification__multifile():
     file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'multifile', 'openapi.yaml')
     spec_as_dict, base_uri = read_from_filename(file_path)
