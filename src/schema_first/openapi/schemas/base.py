@@ -15,7 +15,7 @@ class BaseSchema(Schema):
     def validate_ref(self, data, **kwargs) -> None:
         if 'ref' in data:
             ALLOWED_FIELDS = {'ref', 'description', 'summary'}
-            ALL_FIELDS = set(data.keys())
+            ALL_FIELDS = set(data)
             if ALL_FIELDS.difference(ALLOWED_FIELDS):
                 raise ValidationError(
                     f"If there is a <'ref'> field, then only <{ALLOWED_FIELDS}>,"

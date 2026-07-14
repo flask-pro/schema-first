@@ -1,3 +1,7 @@
+## Version 0.14.3
+
+* Fix method parameters generate schema.
+
 ## Version 0.14.2
 
 * Fix parameters generate schema.

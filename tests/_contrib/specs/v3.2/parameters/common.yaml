@@ -19,16 +19,6 @@ paths:
         type: string
     - $ref: '#/components/parameters/path'
     get:
-      parameters:
-      - name: sub-header
-        in: header
-        schema:
-          type: string
-      - name: sub-cookie
-        in: cookie
-        schema:
-          type: string
-      - $ref: '#/components/parameters/sub-query'
       operationId: mini_endpoint
       responses:
         '200':
@@ -49,10 +39,5 @@ components:
       name: path
       in: path
       required: true
-      schema:
-        type: string
-    sub-query:
-      name: sub-query
-      in: query
       schema:
         type: string

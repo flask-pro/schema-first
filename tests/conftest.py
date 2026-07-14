@@ -6,6 +6,8 @@ from openapi_spec_validator.readers import read_from_filename
 import pytest
 import yaml
 
+from src.schema_first.specification import Specification
+
 tests_dir_abspath = os.path.dirname(os.path.abspath(__file__))
 
 specs_base_dir = Path(tests_dir_abspath, '_contrib', 'specs')
@@ -65,3 +67,17 @@ def fx_spec_as_file(tmp_path):
         return spec_path
 
     return create
+
+
+@pytest.fixture
+def fx_open_spec():
+    def f(file_path: Path):
+        spec_as_dict, base_uri = read_from_filename(file_path)
+        osv_validate(spec_as_dict, base_uri=base_uri)
+
+        spec = Specification(file_path)
+        spec.load()
+
+        return spec
+
+    return f

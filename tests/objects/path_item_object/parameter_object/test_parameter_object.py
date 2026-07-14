@@ -1,11 +1,8 @@
 from pathlib import Path
 
 from marshmallow.schema import SchemaMeta
-from openapi_spec_validator import validate as osv_validate
-from openapi_spec_validator.readers import read_from_filename
 
 from schema_first.openapi.schemas.v3_2.parameter_object_schema import ParameterObjectSchema
-from src.schema_first.specification import Specification
 from tests.conftest import tests_dir_abspath
 
 
@@ -17,16 +14,45 @@ def test_parameter_full(fx_parameter_object_from_path_full):
     ParameterObjectSchema().load(fx_parameter_object_from_path_full)
 
 
-def test_parameter_object__all_place():
+def test_parameter_object__all(fx_open_spec):
     file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'parameters', 'all.yaml')
-    spec_as_dict, base_uri = read_from_filename(file_path)
-    osv_validate(spec_as_dict, base_uri=base_uri)
+    spec = fx_open_spec(file_path)
 
-    spec = Specification(file_path)
-    spec.load()
+    parameters = spec.reassembly_spec['paths']['/mini_endpoint/{path}']['get']['parameters']
+    headers_schema = parameters['headers']['schema']
+    assert isinstance(headers_schema, SchemaMeta)
+    headers_schema().load({'header': 'test-headers', 'sub-header': 'test-headers'})
 
-    parameters = spec.reassembly_spec['paths']['/mini_endpoint/{uuid}']['get']['parameters']
-    assert isinstance(parameters['headers']['schema'], SchemaMeta)
+    cookies_schema = parameters['cookies']['schema']
     assert isinstance(parameters['cookies']['schema'], SchemaMeta)
-    assert isinstance(parameters['paths']['schema'], SchemaMeta)
+    cookies_schema().load({'cookie': 'test-cookies', 'sub-cookie': 'test-cookies'})
+
+    paths_schema = parameters['paths']['schema']
+    assert isinstance(paths_schema, SchemaMeta)
+    paths_schema().load({'path': 'test-paths'})
+
+    queries_schema = parameters['queries']['schema']
     assert isinstance(parameters['queries']['schema'], SchemaMeta)
+    queries_schema().load({'query': 'test-queries', 'sub-query': 'test-queries'})
+
+
+def test_parameter_object__common(fx_open_spec):
+    file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'parameters', 'common.yaml')
+    spec = fx_open_spec(file_path)
+
+    parameters = spec.reassembly_spec['paths']['/mini_endpoint/{path}']['get']['parameters']
+    headers_schema = parameters['headers']['schema']
+    assert isinstance(headers_schema, SchemaMeta)
+    headers_schema().load({'header': 'test-headers'})
+
+    cookies_schema = parameters['cookies']['schema']
+    assert isinstance(parameters['cookies']['schema'], SchemaMeta)
+    cookies_schema().load({'cookie': 'test-cookies'})
+
+    paths_schema = parameters['paths']['schema']
+    assert isinstance(paths_schema, SchemaMeta)
+    paths_schema().load({'path': 'test-paths'})
+
+    queries_schema = parameters['queries']['schema']
+    assert isinstance(parameters['queries']['schema'], SchemaMeta)
+    queries_schema().load({'query': 'test-queries'})

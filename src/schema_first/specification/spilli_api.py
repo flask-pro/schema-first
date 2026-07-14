@@ -11,10 +11,7 @@ class ConverterOpenAPIToSpilliAPI:
     def _convert_params_to_schema(
         self, params: list[dict], place: t.Literal['header', 'cookie', 'path', 'query']
     ) -> Any | None:
-        schema = {
-            'type': 'object',
-            'additionalProperties': True,
-        }
+        schema = {'type': 'object', 'additionalProperties': True}
 
         required = []
         properties = {}
@@ -47,18 +44,22 @@ class ConverterOpenAPIToSpilliAPI:
 
         return params_as_dict
 
+    def _convert_method_params(self) -> None:
+        for _, methods in self.spilli_api_spec['paths'].items():
+            common_params = methods.pop('parameters', [])
+
+            for method, operation_obj in methods.items():
+                if method in ('summary', 'description', 'servers'):
+                    continue
+
+                method_params = operation_obj.get('parameters', [])
+                all_method_params = common_params + method_params
+                if all_method_params:
+                    operation_obj['parameters'] = self._params_list_to_dict(all_method_params)
+
     def _make_to_spilli_api_format(self) -> None:
         self.spilli_api_spec = json.loads(json.dumps(self.open_api_spec))
-
-        for _, methods in self.spilli_api_spec['paths'].items():
-            common_params = []
-            if 'parameters' in methods:
-                common_params = methods.pop('parameters', [])
-
-            for _, operation_obj in methods.items():
-                if 'parameters' in operation_obj:
-                    method_params = common_params + operation_obj.pop('parameters', [])
-                    operation_obj['parameters'] = self._params_list_to_dict(method_params)
+        self._convert_method_params()
 
     def convert(self) -> dict:
         self._make_to_spilli_api_format()
