@@ -1,3 +1,3 @@
-from .specification import Specification
+from schema_first.specification import Specification
 
 __all__ = ['Specification']

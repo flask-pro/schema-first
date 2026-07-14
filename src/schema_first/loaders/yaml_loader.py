@@ -6,8 +6,8 @@ from typing import Any
 
 import yaml
 
-from .exc import ResolverError
-from .exc import YAMLReaderError
+from schema_first.loaders.exc import ResolverError
+from schema_first.loaders.exc import YAMLReaderError
 
 
 class YAMLReader:

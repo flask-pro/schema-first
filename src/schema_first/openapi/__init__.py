@@ -3,9 +3,9 @@ from pprint import pformat
 
 from marshmallow import ValidationError
 
-from ..loaders.yaml_loader import load_from_yaml
-from .exc import OpenAPIValidationError
-from .schemas.v3_2.openapi_object_schema import OpenAPIObjectSchema
+from schema_first.loaders.yaml_loader import load_from_yaml
+from schema_first.openapi.exc import OpenAPIValidationError
+from schema_first.openapi.schemas.v3_2.openapi_object_schema import OpenAPIObjectSchema
 
 
 class OpenAPI:

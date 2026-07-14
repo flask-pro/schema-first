@@ -1,7 +1,7 @@
 import pytest
 
-from src.schema_first.loaders.exc import YAMLReaderError
-from src.schema_first.loaders.yaml_loader import load_from_yaml
+from schema_first.loaders.exc import YAMLReaderError
+from schema_first.loaders.yaml_loader import load_from_yaml
 
 
 def test_loaders__yaml__multiple__response_ref(fx_spec_required, fx_spec_as_file):

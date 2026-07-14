@@ -14,6 +14,12 @@ repos:
   - id: check-builtin-literals
   - id: check-toml
   - id: double-quote-string-fixer
+  - id: check-merge-conflict
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.21.2
+  hooks:
+  - id: pyupgrade
+    args: [--py314-plus]
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
   hooks:
@@ -24,15 +30,18 @@ repos:
   - id: python-no-log-warn
   - id: python-use-type-annotations
   - id: text-unicode-replacement-char
+- repo: https://github.com/dannysepler/rm_unneeded_f_str
+  rev: v0.2.0
+  hooks:
+  - id: rm-unneeded-f-str
+- repo: https://github.com/mxr/unkey
+  rev: v0.0.2
+  hooks:
+  - id: unkey
 - repo: https://github.com/pycqa/isort
-  rev: 9.0.0a3
+  rev: 9.0.0b1
   hooks:
   - id: isort
-- repo: https://github.com/asottile/pyupgrade
-  rev: v3.21.2
-  hooks:
-  - id: pyupgrade
-    args: [--py314-plus]
 - repo: https://github.com/hauntsaninja/no_implicit_optional
   rev: '1.4'
   hooks:
@@ -59,6 +68,20 @@ repos:
     - flake8-pytest-style
 #    - flake8-absolute-import
     args: [--max-line-length=100]
+#- repo: local
+#  hooks:
+#  - id: pylint
+#    name: pylint
+#    entry: pylint
+#    language: system
+#    types: [python]
+#    require_serial: true
+- repo: https://github.com/PyCQA/bandit
+  rev: 1.9.4
+  hooks:
+  - id: bandit
+    args: [-c, pyproject.toml]
+    additional_dependencies: ['bandit[toml]']
 - repo: https://github.com/mrtazz/checkmake.git
   rev: v0.3.0
   hooks:

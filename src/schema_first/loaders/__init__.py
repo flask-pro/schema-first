@@ -1,3 +1,3 @@
-from .yaml_loader import load_from_yaml
+from schema_first.loaders.yaml_loader import load_from_yaml
 
 __all__ = ['load_from_yaml']

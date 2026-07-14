@@ -2,9 +2,9 @@ from copy import deepcopy
 
 import pytest
 
-from src.schema_first.loaders.exc import ResolverError
-from src.schema_first.loaders.exc import YAMLReaderError
-from src.schema_first.loaders.yaml_loader import load_from_yaml
+from schema_first.loaders.exc import ResolverError
+from schema_first.loaders.exc import YAMLReaderError
+from schema_first.loaders.yaml_loader import load_from_yaml
 
 
 def test_loaders__yaml(fx_spec_required, fx_spec_as_file):
