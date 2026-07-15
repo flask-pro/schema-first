@@ -20,7 +20,7 @@ license-files = ["LICENSE.txt"]
 name = "Schema-First"
 readme = "README.md"
 requires-python = ">=3.14"
-version = "0.14.3"
+version = "0.14.4"
 
 [project.optional-dependencies]
 dev = [

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -157,7 +158,8 @@ class Specification:
     def load(self) -> Specification:
         self.openapi.load()
 
-        self.reassembly_spec = ConverterOpenAPIToSpilliAPI(self.openapi.raw_spec).convert()
+        self.spilli_api = ConverterOpenAPIToSpilliAPI(self.openapi.raw_spec).convert()
+        self.reassembly_spec = deepcopy(self.spilli_api)
         self._reassembly_of_schemas(self.reassembly_spec)
 
         return self

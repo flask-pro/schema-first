@@ -1,3 +1,7 @@
+## Version 0.14.4
+
+* Fix spilli_api attribute in Specification class.
+
 ## Version 0.14.3
 
 * Fix method parameters generate schema.

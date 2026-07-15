@@ -3,9 +3,9 @@ from marshmallow import validate
 from marshmallow import validates_schema
 from marshmallow import ValidationError
 
-from ..base import BaseSchema
-from ..base import DocStringFields
-from .schema_object_schema import SchemaObjectSchema
+from schema_first.openapi.schemas.base import BaseSchema
+from schema_first.openapi.schemas.base import DocStringFields
+from schema_first.openapi.schemas.v3_2.schema_object_schema import SchemaObjectSchema
 
 
 class ExampleObjectSchema(DocStringFields, BaseSchema):

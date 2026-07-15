@@ -3,8 +3,8 @@ from marshmallow import Schema
 from marshmallow import validates_schema
 from marshmallow import ValidationError
 
-from .fields import DESCRIPTION_FIELD
-from .fields import SUMMARY_FIELD
+from schema_first.openapi.schemas.fields import DESCRIPTION_FIELD
+from schema_first.openapi.schemas.fields import SUMMARY_FIELD
 
 
 class BaseSchema(Schema):
