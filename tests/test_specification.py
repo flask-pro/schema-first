@@ -21,9 +21,13 @@ def test_specification(request, fx_spec_as_file, fx):
     spec = Specification(spec_file)
 
     assert spec.openapi
+    assert spec.spilli_api is None
     assert spec.reassembly_spec is None
 
     spec.load()
+
+    assert isinstance(spec.spilli_api, dict)
+    assert isinstance(spec.reassembly_spec, dict)
 
     request_schema = get_schema_from_request(spec.reassembly_spec, '/required-endpoint', '200')
     assert isinstance(request_schema(), Schema)

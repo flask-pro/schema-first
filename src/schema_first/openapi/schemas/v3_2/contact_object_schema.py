@@ -1,6 +1,6 @@
 from marshmallow import fields
 
-from ..base import BaseSchema
+from schema_first.openapi.schemas.base import BaseSchema
 
 
 class ContactObjectSchema(BaseSchema):
