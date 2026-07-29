@@ -1,3 +1,4 @@
+from copy import deepcopy
 import json
 from typing import Any
 import typing as t
@@ -5,7 +6,7 @@ import typing as t
 
 class ConverterOpenAPIToSpilliAPI:
     def __init__(self, open_api_spec: dict) -> None:
-        self.open_api_spec = open_api_spec
+        self.open_api_spec = deepcopy(open_api_spec)
         self.spilli_api_spec = None
 
     def _convert_params_to_schema(

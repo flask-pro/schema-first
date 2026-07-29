@@ -102,7 +102,7 @@ def fx_field_string__uri(fx_field_string__required) -> dict:
         **fx_field_string__required,
         'format': 'uri',
         'minLength': 0,
-        'maxLength': 20,
+        'maxLength': 40,
         'default': 'http://legalact.pro',
     }
 
