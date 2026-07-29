@@ -41,14 +41,17 @@ class Specification:
 
     @staticmethod
     def _make_field_validators(schema: dict) -> list[validate.Validator]:
+        NON_VALIDATING_FORMATS = ['date', 'date-time', 'ipv4', 'ipv6', 'time', 'uuid']
+
         validators = []
 
-        if schema['type'] in ['string']:
+        format_ = schema.get('format')
+        if schema['type'] in ['string'] and format_ not in NON_VALIDATING_FORMATS:
             validators.append(
                 validate.Length(min=schema.get('minLength'), max=schema.get('maxLength'))
             )
-            if schema.get('pattern'):
-                validators.append(validate.Regexp(schema['pattern']))
+            if pattern := schema.get('pattern'):
+                validators.append(validate.Regexp(pattern))
 
         if schema['type'] in ['integer', 'number']:
             validators.append(validate.Range(min=schema.get('minimum'), max=schema.get('maximum')))

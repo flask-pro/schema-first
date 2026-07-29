@@ -1,3 +1,7 @@
+## Version 0.14.6
+
+* Fix validating for formats.
+
 ## Version 0.14.5
 
 * Fix validation from enum.
