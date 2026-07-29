@@ -1,3 +1,7 @@
+## Version 0.14.5
+
+* Fix validation from enum.
+
 ## Version 0.14.4
 
 * Fix spilli_api attribute in Specification class.

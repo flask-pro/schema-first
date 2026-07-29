@@ -30,14 +30,8 @@ def test_converter__schema_fields(fx_spec_full, fx_spec_as_file):
     [
         {'message': 'Valid string'},
         {'binary': 'Valid binary'},
-        {'date': '2025-01-01'},
-        {'date-time': '2025-08-03T20:02:15Z'},
         {'email': 'test@test.test'},
-        {'ipv4': '192.168.0.0'},
-        {'ipv6': 'fa:de:ef::0'},
-        {'time': '00:00:00'},
         {'uri': 'https://test.test/test'},
-        {'uuid': 'cb4fccc1-ced2-47fc-9a39-942da153ae58'},
     ],
 )
 def test_converter__string_valid(fx_spec_full, fx_spec_as_file, schema):

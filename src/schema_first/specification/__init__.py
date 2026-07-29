@@ -68,7 +68,7 @@ class Specification:
             )
 
         initialized_schema = schema()
-        initialized_schema.validate = self._make_field_validators(field_schema)
+        initialized_schema.validators = self._make_field_validators(field_schema)
         initialized_schema.allow_none = field_schema.get('nullable', False)
         initialized_schema.required = field_schema.get('required', False)
         return initialized_schema

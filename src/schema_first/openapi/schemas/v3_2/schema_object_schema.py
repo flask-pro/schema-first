@@ -104,7 +104,7 @@ class StringFieldSchema(BaseSchemaField):
     format = fields.String(validate=validate.OneOf(FORMATS))
     minLength = fields.Integer(validate=[validate.Range(min=0)])
     maxLength = fields.Integer(validate=[validate.Range(min=0)])
-    enum = fields.List(fields.String())
+    enum = fields.List(fields.String(), validate=[validate.Length(min=1)])
     pattern = fields.String()
     default = fields.String()
     example = fields.String()
