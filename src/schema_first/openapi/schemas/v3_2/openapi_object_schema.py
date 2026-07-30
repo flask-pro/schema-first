@@ -51,15 +51,27 @@ class OpenAPIObjectSchema(BaseSchema):
 
     @post_load
     def validate_path_parameter(self, data, **kwargs) -> None:
-        endpoints = data['paths'].keys()
+        endpoints = data['paths']
         for endpoint in endpoints:
-            param_names = re.findall(r'\{(.*?)}', endpoint)
-            if param_names:
-                params_from_components = data['components'].get('parameters')
-                if params_from_components:
-                    param_names_from_components = params_from_components.keys()
+            path_params_names = set()
 
-                    if not set(param_names).issubset(set(param_names_from_components)):
-                        raise ValidationError(
-                            f'Parameters from <{param_names}> not in </components/parameters>.'
-                        )
+            params_from_endpoint = endpoints[endpoint].get('parameters')
+            if params_from_endpoint:
+                for param in params_from_endpoint:
+                    if param['in_'] == 'path':
+                        path_params_names.update([param['name']])
+
+            if components := data.get('components'):
+                params_from_components = components.get('parameters')
+                if params_from_components:
+                    for param in params_from_components.values():
+                        if param['in_'] == 'path':
+                            path_params_names.update([param['name']])
+
+            param_names_from_path = re.findall(r'\{(.*?)}', endpoint)
+            if param_names_from_path:
+                if not set(param_names_from_path).issubset(path_params_names):
+                    raise ValidationError(
+                        f'Parameters from <{param_names_from_path}> not in <{endpoint}>'
+                        f' and not in </components/parameters>.'
+                    )

@@ -3,27 +3,9 @@ info:
   title: Mini API for testing Flask-First
   version: 1.0.0
 paths:
-  /mini_endpoint/{path}:
+  /only-schemas/{path_first}/{path_second}:
     parameters:
-    - name: query
-      in: query
-      schema:
-        type: string
-        enum:
-        - query_param
-    - name: header
-      in: header
-      schema:
-        type: string
-        enum:
-        - header_param
-    - name: cookie
-      in: cookie
-      schema:
-        type: string
-        enum:
-        - cookie_param
-    - $ref: '#/components/parameters/path'
+    - $ref: '#/components/parameters/path_first'
     get:
       responses:
         '200':
@@ -40,11 +22,9 @@ components:
         message:
           type: string
   parameters:
-    path:
-      name: path
+    path_first:
+      name: path_first
       in: path
       required: true
       schema:
         type: string
-        enum:
-        - path_param

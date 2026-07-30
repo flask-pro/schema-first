@@ -1,3 +1,7 @@
+## Version 0.14.7
+
+* Fix validating endpoint parameters.
+
 ## Version 0.14.6
 
 * Fix validating for formats.

@@ -5,7 +5,6 @@ info:
 paths:
   /mini_endpoint:
     post:
-      operationId: mini_endpoint
       requestBody:
         description: Request item.
         content:

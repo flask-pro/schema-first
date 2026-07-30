@@ -4,6 +4,7 @@ from marshmallow import ValidationError
 from marshmallow.schema import SchemaMeta
 import pytest
 
+from schema_first.openapi.exc import OpenAPIValidationError
 from schema_first.openapi.schemas.v3_2.parameter_object_schema import ParameterObjectSchema
 from tests.conftest import tests_dir_abspath
 
@@ -89,3 +90,18 @@ def test_parameter_object__enum(fx_open_spec):
     with pytest.raises(ValidationError) as e:
         queries_schema().load({'query': 'test-queries'})
     assert e.value.args[0] == {'query': ['Must be one of: query_param.']}
+
+
+def test_parameter_object__validate_path_parameters(fx_open_spec):
+    file_path = Path(
+        tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'parameters', 'validate_path_params.yaml'
+    )
+    fx_open_spec(file_path, is_osv_validate=False)
+
+
+@pytest.mark.parametrize('file_name', ['validate_path_params_invalid.yaml'])
+def test_parameter_object__validate_path_parameters_invalid(fx_open_spec, file_name):
+    file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'parameters', file_name)
+
+    with pytest.raises(OpenAPIValidationError):
+        fx_open_spec(file_path, is_osv_validate=False)
