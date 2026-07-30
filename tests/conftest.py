@@ -71,9 +71,11 @@ def fx_spec_as_file(tmp_path):
 
 @pytest.fixture
 def fx_open_spec():
-    def f(file_path: Path):
+    def f(file_path: Path, is_osv_validate: bool = True):
         spec_as_dict, base_uri = read_from_filename(file_path)
-        osv_validate(spec_as_dict, base_uri=base_uri)
+
+        if is_osv_validate:
+            osv_validate(spec_as_dict, base_uri=base_uri)
 
         spec = Specification(file_path)
         spec.load()

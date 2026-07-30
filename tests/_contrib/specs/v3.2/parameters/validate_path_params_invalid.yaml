@@ -1,0 +1,31 @@
+openapi: 3.2.0
+info:
+  title: Mini API for testing Flask-First
+  version: 1.0.0
+paths:
+  /only-schemas/{path_first}/{path_second}:
+    parameters:
+    - $ref: '#/components/parameters/path_first'
+    get:
+      operationId: mini_endpoint
+      responses:
+        '200':
+          description: Response item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        message:
+          type: string
+  parameters:
+    path_first:
+      name: path_first
+      in: path
+      required: true
+      schema:
+        type: string
