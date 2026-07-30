@@ -29,7 +29,6 @@ paths:
         schema:
           type: string
       - $ref: '#/components/parameters/sub-query'
-      operationId: mini_endpoint
       responses:
         '200':
           description: Response item.

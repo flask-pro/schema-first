@@ -25,7 +25,6 @@ paths:
         - cookie_param
     - $ref: '#/components/parameters/path'
     get:
-      operationId: mini_endpoint
       responses:
         '200':
           description: Response item.

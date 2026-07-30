@@ -7,7 +7,6 @@ paths:
     parameters:
     - $ref: '#/components/parameters/path_first'
     get:
-      operationId: mini_endpoint
       responses:
         '200':
           description: Response item.
