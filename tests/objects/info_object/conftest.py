@@ -3,7 +3,7 @@ import pytest
 
 @pytest.fixture
 def fx_info_object_required() -> dict:
-    return {'title': 'Example Pet Store App (API for testing Flask-First)', 'version': '1.0.1'}
+    return {'title': 'Example Pet Store App (API for testing Schema-First)', 'version': '1.0.1'}
 
 
 @pytest.fixture

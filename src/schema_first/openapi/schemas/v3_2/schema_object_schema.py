@@ -271,7 +271,13 @@ class SchemaObjectSchema(BaseSchemaField):
         partial: bool | types.StrSequenceOrSet | None = None,
         unknown: types.UnknownOption | None = None,
     ):
-        if data['type'] == 'array':
+        if 'allOf' in data:
+            raise NotImplementedError('<allOf> not implemented.')
+        elif 'oneOf' in data:
+            raise NotImplementedError('<oneOf> not implemented.')
+        elif 'anyOf' in data:
+            raise NotImplementedError('<anyOf> not implemented.')
+        elif data['type'] == 'array':
             field_schema = ArrayFieldSchema
         else:
             try:
