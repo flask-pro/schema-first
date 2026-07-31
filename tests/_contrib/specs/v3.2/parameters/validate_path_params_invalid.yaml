@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Mini API for testing Flask-First
+  title: API for testing Schema-First
   version: 1.0.0
 paths:
   /only-schemas/{path_first}/{path_second}:

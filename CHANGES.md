@@ -1,3 +1,7 @@
+## Version 0.14.8
+
+* Dummy placeholders have been added for the `allOf`, `anyOf`, and `oneOf` fields.
+
 ## Version 0.14.7
 
 * Fix validating endpoint parameters.
