@@ -5,7 +5,9 @@ from marshmallow import Schema
 from marshmallow import ValidationError
 
 from schema_first.query.exceptions import ContentTypeValidation
+from schema_first.query.exceptions import CookiesValidation
 from schema_first.query.exceptions import EndpointValidation
+from schema_first.query.exceptions import HeadersValidation
 from schema_first.query.exceptions import MethodParametersValidation
 from schema_first.query.exceptions import MethodValidation
 from schema_first.query.exceptions import PathParametersValidation
@@ -50,7 +52,7 @@ class HTTPQueryValidator:
             self.request_fields['content_type'] = fields.String()
             self.request_fields['body'] = fields.Nested(content_type['schema'])
 
-        if 'path_params' in data or 'query_params' in data:
+        if 'path_params' in data or 'query_params' in data or 'headers' in data:
             try:
                 parameters = method_data['parameters']
             except KeyError as exc:
@@ -77,6 +79,26 @@ class HTTPQueryValidator:
                     ) from exc
 
                 self.request_fields['query_params'] = fields.Nested(query_params['schema'])
+
+            if 'headers' in data:
+                try:
+                    headers = parameters['headers']
+                except KeyError as exc:
+                    raise HeadersValidation(
+                        f'Headers <{data['headers']}> not in OpenAPI specification.'
+                    ) from exc
+
+                self.request_fields['headers'] = fields.Nested(headers['schema'])
+
+            if 'cookies' in data:
+                try:
+                    cookies = parameters['cookies']
+                except KeyError as exc:
+                    raise CookiesValidation(
+                        f'Cookies <{data['cookies']}> not in OpenAPI specification.'
+                    ) from exc
+
+                self.request_fields['cookies'] = fields.Nested(cookies['schema'])
 
         return Schema.from_dict(self.request_fields)
 
@@ -110,6 +132,8 @@ class HTTPQueryValidator:
         endpoint: str,
         method: t.Literal['post', 'get', 'update', 'patch', 'delete'],
         content_type: t.Literal['application/json'],
+        headers: dict[str, t.Any] or ... = ...,
+        cookies: dict[str, t.Any] or ... = ...,
         body: dict[str, t.Any] or ... = ...,
         path_params: dict[str, t.Any] or ... = ...,
         query_params: dict[str, t.Any] or ... = ...,
@@ -118,6 +142,8 @@ class HTTPQueryValidator:
             'endpoint': endpoint,
             'method': method,
             'content_type': content_type,
+            'headers': headers,
+            'cookies': cookies,
             'body': body,
             'path_params': path_params,
             'query_params': query_params,
@@ -129,7 +155,9 @@ class HTTPQueryValidator:
         try:
             deserialized_data = schema().load(data)
         except ValidationError as exc:
-            raise RequestValidation(f'Request <{data} validation error>') from exc
+            raise RequestValidation(
+                f'For query <{data}> validation error <{exc.args[0]}>.'
+            ) from exc
 
         return deserialized_data
 

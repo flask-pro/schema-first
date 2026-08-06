@@ -15,6 +15,16 @@ paths:
       required: true
       schema:
         type: string
+    - name: header_field
+      in: header
+      required: true
+      schema:
+        type: string
+    - name: cookie_field
+      in: cookie
+      required: true
+      schema:
+        type: string
     post:
       parameters:
       - name: path_param_2
