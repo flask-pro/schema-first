@@ -2,6 +2,7 @@ VENV_DIR = venv
 PYTHON = python3.14
 PIP = $(VENV_DIR)/bin/pip
 PYTHON_VENV = $(VENV_DIR)/bin/python
+TOX = $(VENV_DIR)/bin/tox
 PRE_COMMIT = $(VENV_DIR)/bin/pre-commit
 PKG_NAME = schema_first
 SRC_DIR = src/$(PKG_NAME)
@@ -35,7 +36,7 @@ build: clean venv
 	$(PYTHON_VENV) -m build
 
 install: clean venv build
-	$(PIP) install dist/$(PKG_NAME)-*.tar.gz
+	pyenv local 3.12 3.13 3.14
 	pre-commit install
 
 check_dist: build
@@ -46,5 +47,9 @@ upload_to_testpypi: build
 
 upload_to_pypi: build
 	$(PYTHON_VENV) -m twine upload --verbose --repository pypi dist/*
+
+tox: venv
+	# Testing project via several Python versions.
+	$(TOX) run-parallel
 
 all: install test

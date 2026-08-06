@@ -22,7 +22,7 @@ class YAMLReader:
 
     @staticmethod
     def _yaml_to_dict(path: Path) -> dict:
-        with open(path) as f:
+        with open(path, encoding='utf-8') as f:
             s = yaml.safe_load(f)
         return s
 
@@ -31,8 +31,8 @@ class YAMLReader:
 
         try:
             self.store[file_path] = self._yaml_to_dict(path_to_spec_file)
-        except FileNotFoundError:
-            raise YAMLReaderError(f'No such file or directory: <{file_path}>')
+        except FileNotFoundError as exc:
+            raise YAMLReaderError(f'No such file or directory: <{file_path}>') from exc
 
         return self.store[file_path]
 
@@ -42,8 +42,8 @@ class YAMLReader:
             if ref:
                 try:
                     file_path, _ = ref.split('#/')
-                except (AttributeError, ValueError):
-                    raise YAMLReaderError(f'"$ref" with value <{ref}> is not valid.')
+                except (AttributeError, ValueError) as exc:
+                    raise YAMLReaderError(f'"$ref" with value <{ref}> is not valid.') from exc
 
                 if file_path and file_path not in self.store:
                     self.search_file(self.add_file_to_store(file_path))
@@ -58,7 +58,7 @@ class YAMLReader:
         else:
             return
 
-    def load(self) -> YAMLReader:
+    def load(self) -> 'YAMLReader':
         root_file = self._yaml_to_dict(self.path)
         self.store[self.root_file_name] = root_file
         self.search_file(root_file)
@@ -82,8 +82,8 @@ class RefResolver:
             return deepcopy(
                 reduce(get_value_of_key_from_dict, keys, self.yaml_reader.store[file_path])
             )
-        except KeyError:
-            raise ResolverError(f'No such path: "{node_path}"')
+        except KeyError as exc:
+            raise ResolverError(f'No such path: "{node_path}"') from exc
 
     def _get_schema(self, root_file_name: str, file_path: str or None, node_path: str) -> Any:
         if file_path and node_path:
@@ -103,10 +103,10 @@ class RefResolver:
             if ref is not ...:
                 try:
                     file_path_from_ref, node_path = ref.split('#/')
-                except (AttributeError, ValueError):
+                except (AttributeError, ValueError) as exc:
                     raise ResolverError(
                         f'"$ref" with value <{ref}> is not valid in file <{file_path}>'
-                    )
+                    ) from exc
 
                 if file_path_from_ref:
                     obj = self._resolving_all_refs(
@@ -130,7 +130,7 @@ class RefResolver:
 
         return obj
 
-    def resolving(self) -> RefResolver:
+    def resolving(self) -> 'RefResolver':
         root_file_path = self.yaml_reader.root_file_name
         root_spec = self.yaml_reader.store[root_file_path]
         self.resolved_spec = self._resolving_all_refs(root_file_path, root_spec)

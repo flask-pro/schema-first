@@ -19,7 +19,7 @@ Validate and convert OpenAPI specification via Marshmallow schemas to Marshmallo
 
 ## Installation
 
-Recommended using the latest version of Python. Schema-First supports Python 3.14 and newer.
+Recommended using the latest version of Python. Schema-First supports Python 3.12 and newer.
 
 Install and update using `pip`:
 
@@ -31,26 +31,24 @@ $ pip install -U schema_first
 
 Create specification - `openapi.yaml`:
 ```yaml
-openapi: 3.1.1
+openapi: 3.2.0
 info:
-    title: Example API for testing Flask-First
-    version: 1.0.1
+  title: Example API for testing Schema-First
+  version: 1.0.1
 paths:
-    /endpoint:
-        get:
-            operationId: endpoint
-            responses:
-                '200':
-                    content:
-                        application/json:
-                            schema:
-                                properties:
-                                    message:
-                                        type: string
-                                type: object
-                    description: OK
-
-
+  /endpoint:
+    get:
+      operationId: endpoint
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                type: object
+          description: OK
 ```
 Create script - `main.py`:
 ```python

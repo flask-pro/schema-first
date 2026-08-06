@@ -8,11 +8,11 @@ from openapi_spec_validator.readers import read_from_filename
 import pytest
 
 from src.schema_first.specification import Specification
-from tests.conftest import specs_base_dir
+from tests.conftest import openapi_3_2_path_specs
 from tests.conftest import tests_dir_abspath
 from tests.utils import get_schema_from_request
 
-spec_file_paths = list(Path(specs_base_dir, 'v3.2').iterdir())
+spec_file_paths = list(Path(openapi_3_2_path_specs).iterdir())
 
 
 @pytest.mark.parametrize('fx', ['fx_spec_required', 'fx_spec_full'])

@@ -16,5 +16,5 @@ class OpenAPI:
     def load(self) -> dict:
         try:
             return OpenAPIObjectSchema().load(self.raw_spec)
-        except ValidationError as e:
-            raise OpenAPIValidationError(f'\n{pformat(e.messages, width=320)}')
+        except ValidationError as exc:
+            raise OpenAPIValidationError(f'\n{pformat(exc.messages, width=320)}') from exc

@@ -1,0 +1,12 @@
+openapi: 3.2.0
+info:
+  title: API for testing Schema-First
+  version: 1.0.0
+paths:
+  /endpoint:
+    get:
+      operationId: download_file
+      responses:
+        '200':
+          content:
+            application/octet-stream: {}

@@ -113,7 +113,7 @@ class StringFieldSchema(BaseSchemaField):
     def validate_pattern(self, value: str, data_key: str) -> None:
         try:
             re.compile(value)
-        except re.PatternError as e:
+        except re.error as e:
             raise ValidationError(f"Pattern <{value}> is error <{repr(e)}>.")
 
     @validates_schema
