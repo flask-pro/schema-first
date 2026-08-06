@@ -52,12 +52,17 @@ class HTTPQueryValidator:
             self.request_fields['content_type'] = fields.String()
             self.request_fields['body'] = fields.Nested(content_type['schema'])
 
-        if 'path_params' in data or 'query_params' in data or 'headers' in data:
+        if (
+            'path_params' in data
+            or 'query_params' in data
+            or 'headers' in data
+            or 'cookies' in data
+        ):
             try:
                 parameters = method_data['parameters']
             except KeyError as exc:
                 raise MethodParametersValidation(
-                    f'Parameters <{data['path_params']}> not in OpenAPI specification.'
+                    f'Parameters for <{data['endpoint']}> not in OpenAPI specification.'
                 ) from exc
 
             if 'path_params' in data:
