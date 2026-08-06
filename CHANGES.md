@@ -1,3 +1,7 @@
+## Version 0.15.2
+
+* Fix HTTPQueryValidator.
+
 ## Version 0.15.1
 
 * Add `headers` and `cookies` for query validator.
