@@ -2,6 +2,7 @@ import typing as t
 
 from marshmallow import fields
 from marshmallow import Schema
+from marshmallow import ValidationError
 
 from schema_first.query.exceptions import ContentTypeValidation
 from schema_first.query.exceptions import EndpointValidation
@@ -9,22 +10,20 @@ from schema_first.query.exceptions import MethodParametersValidation
 from schema_first.query.exceptions import MethodValidation
 from schema_first.query.exceptions import PathParametersValidation
 from schema_first.query.exceptions import QueryParametersValidation
+from schema_first.query.exceptions import RequestValidation
+from schema_first.query.exceptions import ResponseValidation
 from schema_first.query.exceptions import StatusCodeValidation
 from schema_first.specification import Specification
-
-
-class Request(t.TypedDict):
-    endpoint: str
-    method: t.Literal['post', 'get', 'update', 'patch', 'delete']
-    content_type: t.Literal['application/json']
-    body: dict[str, t.Any] | None
 
 
 class HTTPQueryValidator:
     def __init__(self, spec: Specification) -> None:
         self.spec = spec
 
-    def _get_method_data(self, **data: Request) -> dict:
+        self.request_fields = {}
+        self.response_fields = {}
+
+    def _get_method_data(self, **data: dict[str, t.Any]) -> dict:
         endpoint = self.spec.reassembly_spec['paths'].get(data['endpoint'])
         if not endpoint:
             raise EndpointValidation(f'Path <{data['endpoint']}> not in OpenAPI specification.')
@@ -35,13 +34,11 @@ class HTTPQueryValidator:
 
         return method
 
-    def _make_schema_for_request(self, **data: Request) -> type[Schema]:
-        schema_as_dict = {}
-
+    def _make_schema_for_request(self, **data: dict[str, t.Any]) -> type[Schema]:
         method_data = self._get_method_data(**data)
 
-        schema_as_dict['endpoint'] = fields.String()
-        schema_as_dict['method'] = fields.String()
+        self.request_fields['endpoint'] = fields.String()
+        self.request_fields['method'] = fields.String()
 
         if 'body' in data:
             content_type = method_data['requestBody']['content'].get(data['content_type'])
@@ -50,8 +47,8 @@ class HTTPQueryValidator:
                     f'Content type <{data['content_type']}> not in OpenAPI specification.'
                 )
 
-            schema_as_dict['content_type'] = fields.String()
-            schema_as_dict['body'] = fields.Nested(content_type['schema'])
+            self.request_fields['content_type'] = fields.String()
+            self.request_fields['body'] = fields.Nested(content_type['schema'])
 
         if 'path_params' in data or 'query_params' in data:
             try:
@@ -69,7 +66,7 @@ class HTTPQueryValidator:
                         f'Path parameters <{data['path_params']}> not in OpenAPI specification.'
                     ) from exc
 
-                schema_as_dict['path_params'] = fields.Nested(path_params['schema'])
+                self.request_fields['path_params'] = fields.Nested(path_params['schema'])
 
             if 'query_params' in data:
                 try:
@@ -79,17 +76,15 @@ class HTTPQueryValidator:
                         f'Query parameters <{data['query_params']}> not in OpenAPI specification.'
                     ) from exc
 
-                schema_as_dict['query_params'] = fields.Nested(query_params['schema'])
+                self.request_fields['query_params'] = fields.Nested(query_params['schema'])
 
-        return Schema.from_dict(schema_as_dict)
+        return Schema.from_dict(self.request_fields)
 
-    def _make_schema_for_response(self, **data: Request) -> type[Schema]:
-        schema_as_dict = {}
-
+    def _make_schema_for_response(self, **data: dict[str, t.Any]) -> type[Schema]:
         method_data = self._get_method_data(**data)
 
-        schema_as_dict['endpoint'] = fields.String()
-        schema_as_dict['method'] = fields.String()
+        self.response_fields['endpoint'] = fields.String()
+        self.response_fields['method'] = fields.String()
 
         status_code = method_data['responses'].get(data['status_code'])
         if not status_code:
@@ -97,7 +92,7 @@ class HTTPQueryValidator:
                 f'Status code <{data['status_code']}> not in OpenAPI specification.'
             )
 
-        schema_as_dict['status_code'] = fields.String()
+        self.response_fields['status_code'] = fields.String()
 
         content_type = status_code['content'].get(data['content_type'])
         if not content_type:
@@ -105,19 +100,60 @@ class HTTPQueryValidator:
                 f'Content type <{data['content_type']}> not in OpenAPI specification.'
             )
 
-        schema_as_dict['content_type'] = fields.String()
-        schema_as_dict['body'] = fields.Nested(content_type['schema'])
+        self.response_fields['content_type'] = fields.String()
+        self.response_fields['body'] = fields.Nested(content_type['schema'])
 
-        return Schema.from_dict(schema_as_dict)
+        return Schema.from_dict(self.response_fields)
 
-    def request_handler(self, **data: Request):
+    def request_handler(
+        self,
+        endpoint: str,
+        method: t.Literal['post', 'get', 'update', 'patch', 'delete'],
+        content_type: t.Literal['application/json'],
+        body: dict[str, t.Any] or ... = ...,
+        path_params: dict[str, t.Any] or ... = ...,
+        query_params: dict[str, t.Any] or ... = ...,
+    ):
+        all_kwargs = {
+            'endpoint': endpoint,
+            'method': method,
+            'content_type': content_type,
+            'body': body,
+            'path_params': path_params,
+            'query_params': query_params,
+        }
+        data = {k: v for k, v in all_kwargs.items() if v is not ...}
+
         schema = self._make_schema_for_request(**data)
-        deserialized_data = schema().load(data)
+
+        try:
+            deserialized_data = schema().load(data)
+        except ValidationError as exc:
+            raise RequestValidation(f'Request <{data} validation error>') from exc
 
         return deserialized_data
 
-    def response_handler(self, **data: Request):
+    def response_handler(
+        self,
+        endpoint: str,
+        method: t.Literal['post', 'get', 'update', 'patch', 'delete'],
+        content_type: t.Literal['application/json'],
+        status_code: str,
+        body: dict[str, t.Any] or ... = ...,
+    ):
+        all_kwargs = {
+            'endpoint': endpoint,
+            'method': method,
+            'content_type': content_type,
+            'status_code': status_code,
+            'body': body,
+        }
+        data = {k: v for k, v in all_kwargs.items() if v is not ...}
         schema = self._make_schema_for_response(**data)
-        deserialized_data = schema().load(data)
+
+        try:
+            deserialized_data = schema().load(data)
+        except ValidationError as exc:
+            raise ResponseValidation(f'Response <{data} validation error>') from exc
 
         return deserialized_data

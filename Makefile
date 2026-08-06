@@ -13,7 +13,6 @@ venv: venv/pyvenv.cfg $(PKG_DIR)
 	# Create virtual environment.
 
 venv/pyvenv.cfg: pyproject.toml $(PKG_DIR)
-	pyenv local 3.12 3.13 3.14
 	$(PYTHON) -m venv $(VENV_DIR)
 	$(PIP) -q install --upgrade pip wheel
 	$(PIP) -q install -e ".[dev]" && $(PIP) -q install -e .
@@ -37,7 +36,7 @@ build: clean venv
 	$(PYTHON_VENV) -m build
 
 install: clean venv build
-	$(PIP) install dist/$(PKG_NAME)-*.tar.gz
+	pyenv local 3.12 3.13 3.14
 	pre-commit install
 
 check_dist: build

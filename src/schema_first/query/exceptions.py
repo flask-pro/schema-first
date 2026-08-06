@@ -31,3 +31,11 @@ class PathParametersValidation(QueryValidatorException):
 
 class QueryParametersValidation(QueryValidatorException):
     """Exception for request arguments validation error."""
+
+
+class RequestValidation(QueryValidatorException):
+    """Exception for request validation error."""
+
+
+class ResponseValidation(QueryValidatorException):
+    """Exception for response validation error."""
