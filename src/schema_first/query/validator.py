@@ -12,6 +12,7 @@ from schema_first.query.exceptions import MethodParametersValidation
 from schema_first.query.exceptions import MethodValidation
 from schema_first.query.exceptions import PathParametersValidation
 from schema_first.query.exceptions import QueryParametersValidation
+from schema_first.query.exceptions import QueryValidatorException
 from schema_first.query.exceptions import RequestValidation
 from schema_first.query.exceptions import ResponseValidation
 from schema_first.query.exceptions import StatusCodeValidation
@@ -37,20 +38,28 @@ class HTTPQueryValidator:
         return method
 
     def _make_schema_for_request(self, **data: dict[str, t.Any]) -> type[Schema]:
+
         method_data = self._get_method_data(**data)
 
         self.request_fields['endpoint'] = fields.String()
         self.request_fields['method'] = fields.String()
 
-        if 'body' in data:
-            content_type = method_data['requestBody']['content'].get(data['content_type'])
-            if not content_type:
+        if 'content_type' in data and 'body' in data:
+            try:
+                content_type = method_data['requestBody']['content'].get(data['content_type'])
+            except KeyError as exc:
                 raise ContentTypeValidation(
                     f'Content type <{data['content_type']}> not in OpenAPI specification.'
-                )
+                ) from exc
 
             self.request_fields['content_type'] = fields.String()
             self.request_fields['body'] = fields.Nested(content_type['schema'])
+
+        elif 'content_type' not in data and 'body' not in data:
+            pass
+
+        else:
+            raise QueryValidatorException('<content_type> and <body> should be passed together.')
 
         if (
             'path_params' in data
@@ -136,7 +145,7 @@ class HTTPQueryValidator:
         self,
         endpoint: str,
         method: t.Literal['post', 'get', 'update', 'patch', 'delete'],
-        content_type: t.Literal['application/json'],
+        content_type: t.Literal['application/json'] or ... = ...,
         headers: dict[str, t.Any] or ... = ...,
         cookies: dict[str, t.Any] or ... = ...,
         body: dict[str, t.Any] or ... = ...,
