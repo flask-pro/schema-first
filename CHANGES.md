@@ -1,4 +1,8 @@
-## Version 0.14.8
+## Version 0.15.1
+
+* Add `headers` and `cookies` for query validator.
+
+## Version 0.15.0
 
 * Add query validator.
 

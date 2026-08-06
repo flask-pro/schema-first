@@ -33,6 +33,14 @@ class QueryParametersValidation(QueryValidatorException):
     """Exception for request arguments validation error."""
 
 
+class HeadersValidation(QueryValidatorException):
+    """Exception for headers validation error."""
+
+
+class CookiesValidation(QueryValidatorException):
+    """Exception for cookies validation error."""
+
+
 class RequestValidation(QueryValidatorException):
     """Exception for request validation error."""
 
