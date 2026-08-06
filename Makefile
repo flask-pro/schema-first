@@ -13,6 +13,7 @@ venv: venv/pyvenv.cfg $(PKG_DIR)
 	# Create virtual environment.
 
 venv/pyvenv.cfg: pyproject.toml $(PKG_DIR)
+	pyenv local 3.12 3.13 3.14
 	$(PYTHON) -m venv $(VENV_DIR)
 	$(PIP) -q install --upgrade pip wheel
 	$(PIP) -q install -e ".[dev]" && $(PIP) -q install -e .
@@ -50,6 +51,6 @@ upload_to_pypi: build
 
 tox: venv
 	# Testing project via several Python versions.
-	$(TOX)
+	$(TOX) run-parallel
 
 all: install test

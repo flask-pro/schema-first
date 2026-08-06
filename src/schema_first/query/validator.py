@@ -56,28 +56,28 @@ class HTTPQueryValidator:
         if 'path_params' in data or 'query_params' in data:
             try:
                 parameters = method_data['parameters']
-            except KeyError:
+            except KeyError as exc:
                 raise MethodParametersValidation(
                     f'Parameters <{data['path_params']}> not in OpenAPI specification.'
-                )
+                ) from exc
 
             if 'path_params' in data:
                 try:
                     path_params = parameters['paths']
-                except KeyError:
+                except KeyError as exc:
                     raise PathParametersValidation(
                         f'Path parameters <{data['path_params']}> not in OpenAPI specification.'
-                    )
+                    ) from exc
 
                 schema_as_dict['path_params'] = fields.Nested(path_params['schema'])
 
             if 'query_params' in data:
                 try:
                     query_params = parameters['queries']
-                except KeyError:
+                except KeyError as exc:
                     raise QueryParametersValidation(
                         f'Query parameters <{data['query_params']}> not in OpenAPI specification.'
-                    )
+                    ) from exc
 
                 schema_as_dict['query_params'] = fields.Nested(query_params['schema'])
 
