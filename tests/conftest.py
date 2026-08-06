@@ -10,7 +10,7 @@ from src.schema_first.specification import Specification
 
 tests_dir_abspath = os.path.dirname(os.path.abspath(__file__))
 
-specs_base_dir = Path(tests_dir_abspath, '_contrib', 'specs')
+openapi_3_2_path_specs = Path(tests_dir_abspath, 'specs', 'openapi', 'v3.2')
 
 pytest_plugins = (
     'tests.objects.components_object.conftest',
@@ -39,6 +39,14 @@ pytest_plugins = (
     'tests.objects.server_object.conftest',
     'tests.objects.tag_object.conftest',
 )
+
+
+@pytest.fixture
+def fx_openapi_3_2_0():
+    def _make_path(file_name: str):
+        return Path(openapi_3_2_path_specs, file_name)
+
+    return _make_path
 
 
 @pytest.fixture

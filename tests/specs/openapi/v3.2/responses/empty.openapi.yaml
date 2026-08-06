@@ -1,0 +1,20 @@
+openapi: 3.2.0
+info:
+  title: API for testing Schema-First
+  version: 1.0.0
+paths:
+  /endpoint:
+    post:
+      operationId: upload_file
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '204':
+          description: Empty body.

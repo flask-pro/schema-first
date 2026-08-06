@@ -1,12 +1,9 @@
-from pathlib import Path
-
 from marshmallow import ValidationError
 from marshmallow.schema import SchemaMeta
 import pytest
 
 from schema_first.openapi.exc import OpenAPIValidationError
 from schema_first.openapi.schemas.v3_2.parameter_object_schema import ParameterObjectSchema
-from tests.conftest import tests_dir_abspath
 
 
 def test_parameter_required(fx_parameter_object_from_path_required):
@@ -17,8 +14,8 @@ def test_parameter_full(fx_parameter_object_from_path_full):
     ParameterObjectSchema().load(fx_parameter_object_from_path_full)
 
 
-def test_parameter_object__all(fx_open_spec):
-    file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'parameters', 'all.yaml')
+def test_parameter_object__all(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('parameters/all.yaml')
     spec = fx_open_spec(file_path)
 
     parameters = spec.reassembly_spec['paths']['/mini_endpoint/{path}']['get']['parameters']
@@ -39,8 +36,8 @@ def test_parameter_object__all(fx_open_spec):
     queries_schema().load({'query': 'test-queries', 'sub-query': 'test-queries'})
 
 
-def test_parameter_object__common(fx_open_spec):
-    file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'parameters', 'common.yaml')
+def test_parameter_object__common(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('parameters/common.yaml')
     spec = fx_open_spec(file_path)
 
     parameters = spec.reassembly_spec['paths']['/mini_endpoint/{path}']['get']['parameters']
@@ -61,8 +58,8 @@ def test_parameter_object__common(fx_open_spec):
     queries_schema().load({'query': 'test-queries'})
 
 
-def test_parameter_object__enum(fx_open_spec):
-    file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'parameters', 'enum.yaml')
+def test_parameter_object__enum(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('parameters/enum.yaml')
     spec = fx_open_spec(file_path)
 
     parameters = spec.reassembly_spec['paths']['/mini_endpoint/{path}']['get']['parameters']
@@ -92,16 +89,16 @@ def test_parameter_object__enum(fx_open_spec):
     assert e.value.args[0] == {'query': ['Must be one of: query_param.']}
 
 
-def test_parameter_object__validate_path_parameters(fx_open_spec):
-    file_path = Path(
-        tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'parameters', 'validate_path_params.yaml'
-    )
+def test_parameter_object__validate_path_parameters(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('parameters/validate_path_params.yaml')
     fx_open_spec(file_path, is_osv_validate=False)
 
 
 @pytest.mark.parametrize('file_name', ['validate_path_params_invalid.yaml'])
-def test_parameter_object__validate_path_parameters_invalid(fx_open_spec, file_name):
-    file_path = Path(tests_dir_abspath, '_contrib', 'specs', 'v3.2', 'parameters', file_name)
+def test_parameter_object__validate_path_parameters_invalid(
+    fx_openapi_3_2_0, fx_open_spec, file_name
+):
+    file_path = fx_openapi_3_2_0(f'parameters/{file_name}')
 
     with pytest.raises(OpenAPIValidationError):
         fx_open_spec(file_path, is_osv_validate=False)

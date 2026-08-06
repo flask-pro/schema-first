@@ -158,7 +158,7 @@ class Specification:
                 else:
                     self._reassembly_of_schemas(v)
 
-    def load(self) -> Specification:
+    def load(self) -> 'Specification':
         self.openapi.load()
 
         self.spilli_api = ConverterOpenAPIToSpilliAPI(self.openapi.raw_spec).convert()

@@ -1,0 +1,48 @@
+openapi: 3.2.0
+info:
+  title: OpenAPI file for testing Schema-First.
+  version: 1.0.0
+paths:
+  /endpoint/{path_param_1}/{path_param_2}:
+    parameters:
+    - name: path_param_1
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: query_param_1
+      in: query
+      required: true
+      schema:
+        type: string
+    post:
+      parameters:
+      - name: path_param_2
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: query_param_2
+        in: query
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                request_field:
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  response_field:
+                    type: string

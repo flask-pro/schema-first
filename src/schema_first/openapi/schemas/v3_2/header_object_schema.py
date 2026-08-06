@@ -1,9 +1,9 @@
 from marshmallow import fields
 
-from ..base import BaseSchema
-from ..fields import DESCRIPTION_FIELD
-from .example_object_schema import ExampleObjectSchema
-from .schema_object_schema import SchemaObjectSchema
+from schema_first.openapi.schemas.base import BaseSchema
+from schema_first.openapi.schemas.fields import DESCRIPTION_FIELD
+from schema_first.openapi.schemas.v3_2.example_object_schema import ExampleObjectSchema
+from schema_first.openapi.schemas.v3_2.schema_object_schema import SchemaObjectSchema
 
 
 class HeaderObjectSchema(BaseSchema):

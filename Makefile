@@ -2,6 +2,7 @@ VENV_DIR = venv
 PYTHON = python3.14
 PIP = $(VENV_DIR)/bin/pip
 PYTHON_VENV = $(VENV_DIR)/bin/python
+TOX = $(VENV_DIR)/bin/tox
 PRE_COMMIT = $(VENV_DIR)/bin/pre-commit
 PKG_NAME = schema_first
 SRC_DIR = src/$(PKG_NAME)
@@ -46,5 +47,9 @@ upload_to_testpypi: build
 
 upload_to_pypi: build
 	$(PYTHON_VENV) -m twine upload --verbose --repository pypi dist/*
+
+tox: venv
+	# Testing project via several Python versions.
+	$(TOX)
 
 all: install test

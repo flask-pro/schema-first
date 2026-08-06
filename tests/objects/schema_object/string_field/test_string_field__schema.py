@@ -15,10 +15,7 @@ def test_string_field__pattern(fx_field_string__required):
     with pytest.raises(ValidationError) as e:
         SchemaObjectSchema().load(fx_field_string__required)
 
-    assert (
-        str(e.value) == "{'pattern': [\"Pattern <^*$> is error"
-        " <PatternError('nothing to repeat at position 1')>.\"]}"
-    )
+    assert 'Pattern <^*$> is error' in str(e.value)
 
 
 def test_string_field__pattern__default(fx_field_string__required):

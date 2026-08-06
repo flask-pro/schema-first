@@ -5,16 +5,16 @@ from marshmallow import post_load
 from marshmallow import validates_schema
 from marshmallow import ValidationError
 
-from ..base import BaseSchema
-from ..constants import OPENAPI_VERSION_3_2
-from ..fields import ENDPOINT_FIELD
-from ..validators import VersionMatch
-from .components_object_schema import ComponentsObjectSchema
-from .external_docs_object_schema import ExternalDocsObjectSchema
-from .info_object_schema import InfoObjectSchema
-from .path_item_object_schema import PathItemObjectSchema
-from .server_object_schema import ServerObjectSchema
-from .tag_object_schema import TagObjectSchema
+from schema_first.openapi.schemas.base import BaseSchema
+from schema_first.openapi.schemas.constants import OPENAPI_VERSION_3_2
+from schema_first.openapi.schemas.fields import ENDPOINT_FIELD
+from schema_first.openapi.schemas.v3_2.components_object_schema import ComponentsObjectSchema
+from schema_first.openapi.schemas.v3_2.external_docs_object_schema import ExternalDocsObjectSchema
+from schema_first.openapi.schemas.v3_2.info_object_schema import InfoObjectSchema
+from schema_first.openapi.schemas.v3_2.path_item_object_schema import PathItemObjectSchema
+from schema_first.openapi.schemas.v3_2.server_object_schema import ServerObjectSchema
+from schema_first.openapi.schemas.v3_2.tag_object_schema import TagObjectSchema
+from schema_first.openapi.schemas.validators import VersionMatch
 
 
 class OpenAPIObjectSchema(BaseSchema):
@@ -52,14 +52,24 @@ class OpenAPIObjectSchema(BaseSchema):
     @post_load
     def validate_path_parameter(self, data, **kwargs) -> None:
         endpoints = data['paths']
-        for endpoint in endpoints:
+        for endpoint, path_item in endpoints.items():
             path_params_names = set()
 
-            params_from_endpoint = endpoints[endpoint].get('parameters')
-            if params_from_endpoint:
-                for param in params_from_endpoint:
+            common_params = path_item.get('parameters')
+            if common_params:
+                for param in common_params:
                     if param['in_'] == 'path':
                         path_params_names.update([param['name']])
+
+            for method, method_content in path_item.items():
+                if method not in ['post', 'get', 'update', 'patch', 'delete']:
+                    continue
+
+                params_from_endpoint = method_content.get('parameters')
+                if params_from_endpoint:
+                    for param in params_from_endpoint:
+                        if param['in_'] == 'path':
+                            path_params_names.update([param['name']])
 
             if components := data.get('components'):
                 params_from_components = components.get('parameters')
