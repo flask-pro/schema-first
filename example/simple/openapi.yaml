@@ -1,6 +1,6 @@
-openapi: 3.1.1
+openapi: 3.2.0
 info:
-  title: Example API for testing Flask-First
+  title: Example API for testing Schema-First
   version: 1.0.1
 paths:
   /endpoint:
