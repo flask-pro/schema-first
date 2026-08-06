@@ -19,7 +19,7 @@ Validate and convert OpenAPI specification via Marshmallow schemas to Marshmallo
 
 ## Installation
 
-Recommended using the latest version of Python. Schema-First supports Python 3.14 and newer.
+Recommended using the latest version of Python. Schema-First supports Python 3.12 and newer.
 
 Install and update using `pip`:
 
