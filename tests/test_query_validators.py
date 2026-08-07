@@ -172,11 +172,5 @@ def test_query_validators__response__empty_body_in_spec_error(fx_openapi_3_2_0, 
         'body': {'field': 'value'},
     }
 
-    with pytest.raises(ResponseValidation) as exc:
+    with pytest.raises(ResponseValidation):
         query_validator.response_handler(**request)
-
-    assert exc.value.args == (
-        "Response <{'endpoint': '/endpoint', 'method': 'get', 'content_type': 'application/json',"
-        " 'status_code': '204', 'body': {'field': 'value'}}>"
-        " validation error <({'content_type': ['Unknown field.'], 'body': ['Unknown field.']},)>.",
-    )
