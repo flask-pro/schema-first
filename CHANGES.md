@@ -1,3 +1,7 @@
+## Version 0.16.0
+
+* Refactoring HTTPQueryValidator.
+
 ## Version 0.15.2
 
 * Fix HTTPQueryValidator.
