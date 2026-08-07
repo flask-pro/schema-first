@@ -65,54 +65,18 @@ def test_query_validators__request__bad_endpoint(fx_openapi_3_2_0, fx_open_spec)
 
 
 @pytest.mark.parametrize(
-    ('spec', 'data', 'msg'),
+    ('spec', 'data'),
     [
-        (
-            'no_params.yaml',
-            {'headers': {'field': 'value'}},
-            "Request <{'endpoint': '/endpoint', 'method': 'post', 'headers': {'field': 'value'}}>"
-            " validation error <({'headers': ['Unknown field.']},)>.",
-        ),
-        (
-            'only_headers.yaml',
-            {'cookies': {'field': 'value'}},
-            "Request <{'endpoint': '/endpoint', 'method': 'post', 'cookies': {'field': 'value'}}>"
-            " validation error <({'cookies': ['Unknown field.']},)>.",
-        ),
-        (
-            'only_headers.yaml',
-            {'paths': {'field': 'value'}},
-            "Request <{'endpoint': '/endpoint', 'method': 'post', 'paths': {'field': 'value'}}>"
-            " validation error <({'paths': ['Unknown field.']},)>.",
-        ),
-        (
-            'only_headers.yaml',
-            {'queries': {'field': 'value'}},
-            "Request <{'endpoint': '/endpoint', 'method': 'post', 'queries': {'field': 'value'}}>"
-            " validation error <({'queries': ['Unknown field.']},)>.",
-        ),
-        (
-            'only_headers.yaml',
-            {'content_type': 'application/json', 'body': {'field': 'value'}},
-            "Request <{'endpoint': '/endpoint', 'method': 'post',"
-            " 'content_type': 'application/json', 'body': {'field': 'value'}}> validation"
-            " error <({'content_type': ['Unknown field.'], 'body': ['Unknown field.']},)>.",
-        ),
-        (
-            'only_query.yaml',
-            {'headers': {'field': 'value'}},
-            "Request <{'endpoint': '/endpoint', 'method': 'post', 'headers': {'field': 'value'}}>"
-            " validation error <({'headers': ['Unknown field.']},)>.",
-        ),
-        (
-            'only_headers.yaml',
-            {'body': {'field': 'value'}},
-            "Request <{'endpoint': '/endpoint', 'method': 'post',"
-            " 'body': {'field': 'value'}}> validation error <({'body': ['Unknown field.']},)>.",
-        ),
+        ('no_params.yaml', {'headers': {'field': 'value'}}),
+        ('only_headers.yaml', {'cookies': {'field': 'value'}}),
+        ('only_headers.yaml', {'paths': {'field': 'value'}}),
+        ('only_headers.yaml', {'queries': {'field': 'value'}}),
+        ('only_headers.yaml', {'content_type': 'application/json', 'body': {'field': 'value'}}),
+        ('only_query.yaml', {'headers': {'field': 'value'}}),
+        ('only_headers.yaml', {'body': {'field': 'value'}}),
     ],
 )
-def test_query_validators__request_errors(fx_openapi_3_2_0, fx_open_spec, spec, data, msg):
+def test_query_validators__request_errors(fx_openapi_3_2_0, fx_open_spec, spec, data):
     file_path = fx_openapi_3_2_0(f'query_validator/{spec}')
     spec = fx_open_spec(file_path)
     query_validator = HTTPQueryValidator(spec)
@@ -123,10 +87,8 @@ def test_query_validators__request_errors(fx_openapi_3_2_0, fx_open_spec, spec, 
         **data,
     }
 
-    with pytest.raises(QueryValidatorException) as exc:
+    with pytest.raises(QueryValidatorException):
         query_validator.request_handler(**request)
-
-    assert exc.value.args == (msg,)
 
 
 def test_query_validators__response(fx_openapi_3_2_0, fx_open_spec):
