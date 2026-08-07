@@ -2,6 +2,7 @@ import pytest
 
 from schema_first.query.exceptions import EndpointValidation
 from schema_first.query.exceptions import QueryValidatorException
+from schema_first.query.exceptions import ResponseValidation
 from schema_first.query.validator import HTTPQueryValidator
 
 
@@ -17,9 +18,33 @@ def test_query_validators__request(fx_openapi_3_2_0, fx_open_spec):
         'headers': {'header_field': 'value'},
         'cookies': {'cookie_field': 'value'},
         'body': {'request_field': 'value'},
-        'path_params': {'path_param_1': 'value', 'path_param_2': 'value'},
-        'query_params': {'query_param_1': 'value', 'query_param_2': 'value'},
+        'paths': {'path_param_1': 'value', 'path_param_2': 'value'},
+        'queries': {'query_param_1': 'value', 'query_param_2': 'value'},
     }
+
+    serialized_request = query_validator.request_handler(**request)
+
+    assert serialized_request == request
+
+
+def test_query_validators__request__empty_body_without_request_body(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('query_validator/no_request_body.yaml')
+    spec = fx_open_spec(file_path)
+    query_validator = HTTPQueryValidator(spec)
+
+    request = {'endpoint': '/endpoint', 'method': 'get'}
+
+    serialized_request = query_validator.request_handler(**request)
+
+    assert serialized_request == request
+
+
+def test_query_validators__request__empty_body_with_request_body(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('query_validator/request_body.yaml')
+    spec = fx_open_spec(file_path)
+    query_validator = HTTPQueryValidator(spec)
+
+    request = {'endpoint': '/endpoint', 'method': 'post'}
 
     serialized_request = query_validator.request_handler(**request)
 
@@ -45,37 +70,45 @@ def test_query_validators__request__bad_endpoint(fx_openapi_3_2_0, fx_open_spec)
         (
             'no_params.yaml',
             {'headers': {'field': 'value'}},
-            'Parameters for </endpoint> not in OpenAPI specification.',
+            "Request <{'endpoint': '/endpoint', 'method': 'post', 'headers': {'field': 'value'}}>"
+            " validation error <({'headers': ['Unknown field.']},)>.",
         ),
         (
             'only_headers.yaml',
             {'cookies': {'field': 'value'}},
-            "Cookies <{'field': 'value'}> not in OpenAPI specification.",
+            "Request <{'endpoint': '/endpoint', 'method': 'post', 'cookies': {'field': 'value'}}>"
+            " validation error <({'cookies': ['Unknown field.']},)>.",
         ),
         (
             'only_headers.yaml',
-            {'path_params': {'field': 'value'}},
-            "Path parameters <{'field': 'value'}> not in OpenAPI specification.",
+            {'paths': {'field': 'value'}},
+            "Request <{'endpoint': '/endpoint', 'method': 'post', 'paths': {'field': 'value'}}>"
+            " validation error <({'paths': ['Unknown field.']},)>.",
         ),
         (
             'only_headers.yaml',
-            {'query_params': {'field': 'value'}},
-            "Query parameters <{'field': 'value'}> not in OpenAPI specification.",
+            {'queries': {'field': 'value'}},
+            "Request <{'endpoint': '/endpoint', 'method': 'post', 'queries': {'field': 'value'}}>"
+            " validation error <({'queries': ['Unknown field.']},)>.",
         ),
         (
             'only_headers.yaml',
             {'content_type': 'application/json', 'body': {'field': 'value'}},
-            'Content type <application/json> not in OpenAPI specification.',
+            "Request <{'endpoint': '/endpoint', 'method': 'post',"
+            " 'content_type': 'application/json', 'body': {'field': 'value'}}> validation"
+            " error <({'content_type': ['Unknown field.'], 'body': ['Unknown field.']},)>.",
         ),
         (
             'only_query.yaml',
             {'headers': {'field': 'value'}},
-            "Headers <{'field': 'value'}> not in OpenAPI specification.",
+            "Request <{'endpoint': '/endpoint', 'method': 'post', 'headers': {'field': 'value'}}>"
+            " validation error <({'headers': ['Unknown field.']},)>.",
         ),
         (
             'only_headers.yaml',
             {'body': {'field': 'value'}},
-            '<content_type> and <body> should be passed together.',
+            "Request <{'endpoint': '/endpoint', 'method': 'post',"
+            " 'body': {'field': 'value'}}> validation error <({'body': ['Unknown field.']},)>.",
         ),
     ],
 )
@@ -112,3 +145,38 @@ def test_query_validators__response(fx_openapi_3_2_0, fx_open_spec):
     serialized_request = query_validator.response_handler(**request)
 
     assert serialized_request == request
+
+
+def test_query_validators__response__empty_body_in_spec(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('query_validator/empty_body.yaml')
+    spec = fx_open_spec(file_path)
+    query_validator = HTTPQueryValidator(spec)
+
+    request = {'endpoint': '/endpoint', 'method': 'get', 'status_code': '204'}
+
+    serialized_request = query_validator.response_handler(**request)
+
+    assert serialized_request == request
+
+
+def test_query_validators__response__empty_body_in_spec_error(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('query_validator/empty_body.yaml')
+    spec = fx_open_spec(file_path)
+    query_validator = HTTPQueryValidator(spec)
+
+    request = {
+        'endpoint': '/endpoint',
+        'method': 'get',
+        'content_type': 'application/json',
+        'status_code': '204',
+        'body': {'field': 'value'},
+    }
+
+    with pytest.raises(ResponseValidation) as exc:
+        query_validator.response_handler(**request)
+
+    assert exc.value.args == (
+        "Response <{'endpoint': '/endpoint', 'method': 'get', 'content_type': 'application/json',"
+        " 'status_code': '204', 'body': {'field': 'value'}}>"
+        " validation error <({'content_type': ['Unknown field.'], 'body': ['Unknown field.']},)>.",
+    )

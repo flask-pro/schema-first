@@ -1,0 +1,17 @@
+openapi: 3.2.0
+info:
+  title: OpenAPI file for testing Schema-First.
+  version: 1.0.0
+paths:
+  /endpoint:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  response_field:
+                    type: string

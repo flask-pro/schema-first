@@ -4,18 +4,10 @@ from marshmallow import fields
 from marshmallow import Schema
 from marshmallow import ValidationError
 
-from schema_first.query.exceptions import ContentTypeValidation
-from schema_first.query.exceptions import CookiesValidation
 from schema_first.query.exceptions import EndpointValidation
-from schema_first.query.exceptions import HeadersValidation
-from schema_first.query.exceptions import MethodParametersValidation
 from schema_first.query.exceptions import MethodValidation
-from schema_first.query.exceptions import PathParametersValidation
-from schema_first.query.exceptions import QueryParametersValidation
-from schema_first.query.exceptions import QueryValidatorException
 from schema_first.query.exceptions import RequestValidation
 from schema_first.query.exceptions import ResponseValidation
-from schema_first.query.exceptions import StatusCodeValidation
 from schema_first.specification import Specification
 
 
@@ -23,123 +15,72 @@ class HTTPQueryValidator:
     def __init__(self, spec: Specification) -> None:
         self.spec = spec
 
-        self.request_fields = {}
-        self.response_fields = {}
-
     def _get_method_data(self, **data: dict[str, t.Any]) -> dict:
         endpoint = self.spec.reassembly_spec['paths'].get(data['endpoint'])
         if not endpoint:
             raise EndpointValidation(f'Path <{data['endpoint']}> not in OpenAPI specification.')
 
-        method = endpoint.get(data['method'])
-        if not method:
+        method_data = endpoint.get(data['method'])
+        if not method_data:
             raise MethodValidation(f'Method <{data['method']}> not in OpenAPI specification.')
 
-        return method
+        return method_data
 
     def _make_schema_for_request(self, **data: dict[str, t.Any]) -> type[Schema]:
-
         method_data = self._get_method_data(**data)
 
-        self.request_fields['endpoint'] = fields.String()
-        self.request_fields['method'] = fields.String()
+        request_fields = {'endpoint': fields.String(), 'method': fields.String()}
 
-        if 'content_type' in data and 'body' in data:
-            try:
-                content_type = method_data['requestBody']['content'].get(data['content_type'])
-            except KeyError as exc:
-                raise ContentTypeValidation(
-                    f'Content type <{data['content_type']}> not in OpenAPI specification.'
-                ) from exc
+        if request_body := method_data.get('requestBody'):
+            content = request_body.get('content')
+            if content:
+                content_type = content.get(data.get('content_type'))
+                if content_type:
+                    request_fields['content_type'] = fields.String()
 
-            self.request_fields['content_type'] = fields.String()
-            self.request_fields['body'] = fields.Nested(content_type['schema'])
+                    body_schema = content_type.get('schema')
+                    if body_schema:
+                        request_fields['body'] = fields.Nested(body_schema)
 
-        elif 'content_type' not in data and 'body' not in data:
-            pass
+        if parameters := method_data.get('parameters'):
+            for name_params, schema in parameters.items():
+                params_schema = schema.get('schema')
 
-        else:
-            raise QueryValidatorException('<content_type> and <body> should be passed together.')
+                if not params_schema:
+                    continue
 
-        if (
-            'path_params' in data
-            or 'query_params' in data
-            or 'headers' in data
-            or 'cookies' in data
-        ):
-            try:
-                parameters = method_data['parameters']
-            except KeyError as exc:
-                raise MethodParametersValidation(
-                    f'Parameters for <{data['endpoint']}> not in OpenAPI specification.'
-                ) from exc
+                request_fields[name_params] = fields.Nested(params_schema)
 
-            if 'path_params' in data:
-                try:
-                    path_params = parameters['paths']
-                except KeyError as exc:
-                    raise PathParametersValidation(
-                        f'Path parameters <{data['path_params']}> not in OpenAPI specification.'
-                    ) from exc
+        request_schema = Schema.from_dict(request_fields)
+        request_schema.Meta.unknown = 'raise'
 
-                self.request_fields['path_params'] = fields.Nested(path_params['schema'])
-
-            if 'query_params' in data:
-                try:
-                    query_params = parameters['queries']
-                except KeyError as exc:
-                    raise QueryParametersValidation(
-                        f'Query parameters <{data['query_params']}> not in OpenAPI specification.'
-                    ) from exc
-
-                self.request_fields['query_params'] = fields.Nested(query_params['schema'])
-
-            if 'headers' in data:
-                try:
-                    headers = parameters['headers']
-                except KeyError as exc:
-                    raise HeadersValidation(
-                        f'Headers <{data['headers']}> not in OpenAPI specification.'
-                    ) from exc
-
-                self.request_fields['headers'] = fields.Nested(headers['schema'])
-
-            if 'cookies' in data:
-                try:
-                    cookies = parameters['cookies']
-                except KeyError as exc:
-                    raise CookiesValidation(
-                        f'Cookies <{data['cookies']}> not in OpenAPI specification.'
-                    ) from exc
-
-                self.request_fields['cookies'] = fields.Nested(cookies['schema'])
-
-        return Schema.from_dict(self.request_fields)
+        return request_schema
 
     def _make_schema_for_response(self, **data: dict[str, t.Any]) -> type[Schema]:
         method_data = self._get_method_data(**data)
 
-        self.response_fields['endpoint'] = fields.String()
-        self.response_fields['method'] = fields.String()
+        response_fields = {'endpoint': fields.String(), 'method': fields.String()}
 
         status_code = method_data['responses'].get(data['status_code'])
         if not status_code:
-            raise StatusCodeValidation(
-                f'Status code <{data['status_code']}> not in OpenAPI specification.'
-            )
+            status_code = method_data['responses'].get('default')
 
-        self.response_fields['status_code'] = fields.String()
+        if status_code:
+            response_fields['status_code'] = fields.String()
 
-        content_type = status_code['content'].get(data['content_type'])
-        if not content_type:
-            raise ContentTypeValidation(
-                f'Content type <{data['content_type']}> not in OpenAPI specification.'
-            )
+        if content := status_code.get('content'):
+            content_type = content.get(data['content_type'])
+            if content_type:
+                response_fields['content_type'] = fields.String()
 
-        self.response_fields['content_type'] = fields.String()
-        self.response_fields['body'] = fields.Nested(content_type['schema'])
+                body_schema = content_type.get('schema')
+                if body_schema:
+                    response_fields['body'] = fields.Nested(body_schema)
 
-        return Schema.from_dict(self.response_fields)
+        response_schema = Schema.from_dict(response_fields)
+        response_schema.Meta.unknown = 'raise'
+
+        return response_schema
 
     def request_handler(
         self,
@@ -149,8 +90,8 @@ class HTTPQueryValidator:
         headers: dict[str, t.Any] or ... = ...,
         cookies: dict[str, t.Any] or ... = ...,
         body: dict[str, t.Any] or ... = ...,
-        path_params: dict[str, t.Any] or ... = ...,
-        query_params: dict[str, t.Any] or ... = ...,
+        paths: dict[str, t.Any] or ... = ...,
+        queries: dict[str, t.Any] or ... = ...,
     ):
         all_kwargs = {
             'endpoint': endpoint,
@@ -159,8 +100,8 @@ class HTTPQueryValidator:
             'headers': headers,
             'cookies': cookies,
             'body': body,
-            'path_params': path_params,
-            'query_params': query_params,
+            'paths': paths,
+            'queries': queries,
         }
         data = {k: v for k, v in all_kwargs.items() if v is not ...}
 
@@ -169,9 +110,7 @@ class HTTPQueryValidator:
         try:
             deserialized_data = schema().load(data)
         except ValidationError as exc:
-            raise RequestValidation(
-                f'For query <{data}> validation error <{exc.args[0]}>.'
-            ) from exc
+            raise RequestValidation(f'Request <{data}> validation error <{exc.args}>.') from exc
 
         return deserialized_data
 
@@ -179,8 +118,8 @@ class HTTPQueryValidator:
         self,
         endpoint: str,
         method: t.Literal['post', 'get', 'update', 'patch', 'delete'],
-        content_type: t.Literal['application/json'],
         status_code: str,
+        content_type: t.Literal['application/json'] or ... = ...,
         body: dict[str, t.Any] or ... = ...,
     ):
         all_kwargs = {
@@ -196,6 +135,6 @@ class HTTPQueryValidator:
         try:
             deserialized_data = schema().load(data)
         except ValidationError as exc:
-            raise ResponseValidation(f'Response <{data} validation error>') from exc
+            raise ResponseValidation(f'Response <{data}> validation error <{exc.args}>.') from exc
 
         return deserialized_data
