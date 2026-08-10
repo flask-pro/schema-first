@@ -1,6 +1,7 @@
 import typing as t
 
 from marshmallow import fields
+from marshmallow import INCLUDE
 from marshmallow import Schema
 from marshmallow import ValidationError
 
@@ -49,10 +50,18 @@ class HTTPQueryValidator:
                 if not params_schema:
                     continue
 
-                request_fields[name_params] = fields.Nested(params_schema)
+                if name_params == 'headers':
+                    request_fields[name_params] = fields.Nested(params_schema, unknown=INCLUDE)
+                else:
+                    request_fields[name_params] = fields.Nested(params_schema)
+
+                if 'headers' not in parameters:
+                    request_fields['headers'] = fields.Raw()
+
+        if not parameters:
+            request_fields['headers'] = fields.Raw()
 
         request_schema = Schema.from_dict(request_fields)
-        request_schema.Meta.unknown = 'raise'
 
         return request_schema
 
