@@ -4,6 +4,7 @@ from schema_first.query.exceptions import EndpointValidation
 from schema_first.query.exceptions import QueryValidatorException
 from schema_first.query.exceptions import ResponseValidation
 from schema_first.query.validator import HTTPQueryValidator
+from schema_first.query.validator import RequestValidation
 
 
 def test_query_validators__request(fx_openapi_3_2_0, fx_open_spec):
@@ -67,12 +68,10 @@ def test_query_validators__request__bad_endpoint(fx_openapi_3_2_0, fx_open_spec)
 @pytest.mark.parametrize(
     ('spec', 'data'),
     [
-        ('no_params.yaml', {'headers': {'field': 'value'}}),
         ('only_headers.yaml', {'cookies': {'field': 'value'}}),
         ('only_headers.yaml', {'paths': {'field': 'value'}}),
         ('only_headers.yaml', {'queries': {'field': 'value'}}),
         ('only_headers.yaml', {'content_type': 'application/json', 'body': {'field': 'value'}}),
-        ('only_query.yaml', {'headers': {'field': 'value'}}),
         ('only_headers.yaml', {'body': {'field': 'value'}}),
     ],
 )
@@ -89,6 +88,59 @@ def test_query_validators__request_errors(fx_openapi_3_2_0, fx_open_spec, spec, 
 
     with pytest.raises(QueryValidatorException):
         query_validator.request_handler(**request)
+
+
+def test_query_validators__request__headers(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('query_validator/only_headers.yaml')
+    spec = fx_open_spec(file_path)
+    query_validator = HTTPQueryValidator(spec)
+
+    request = {
+        'endpoint': '/endpoint',
+        'method': 'post',
+        'headers': {'header_field': 'value', 'header_field_1': 'value_1'},
+    }
+
+    serialized_request = query_validator.request_handler(**request)
+
+    assert serialized_request == request
+
+
+def test_query_validators__request__headers__errors(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('query_validator/only_headers.yaml')
+    spec = fx_open_spec(file_path)
+    query_validator = HTTPQueryValidator(spec)
+
+    request = {
+        'endpoint': '/endpoint',
+        'method': 'post',
+        'headers': {'header_field': 1, 'header_field_2': 'value_2'},
+    }
+
+    with pytest.raises(RequestValidation) as exc:
+        query_validator.request_handler(**request)
+
+    assert exc.value.args[0] == (
+        "Request <{'endpoint': '/endpoint', 'method': 'post', 'headers': "
+        "{'header_field': 1, 'header_field_2': 'value_2'}}> validation error "
+        "<({'headers': {'header_field': ['Not a valid string.']}},)>."
+    )
+
+
+def test_query_validators__request__headers_not_in_spec(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('query_validator/only_query.yaml')
+    spec = fx_open_spec(file_path)
+    query_validator = HTTPQueryValidator(spec)
+
+    request = {
+        'endpoint': '/endpoint',
+        'method': 'post',
+        'headers': {'header_field_1': 'value_1', 'header_field_2': 'value_2'},
+    }
+
+    serialized_request = query_validator.request_handler(**request)
+
+    assert serialized_request == request
 
 
 def test_query_validators__response(fx_openapi_3_2_0, fx_open_spec):

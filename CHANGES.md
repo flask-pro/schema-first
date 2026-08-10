@@ -1,3 +1,7 @@
+## Version 0.16.1
+
+* Fix headers validating.
+
 ## Version 0.16.0
 
 * Refactoring HTTPQueryValidator.
