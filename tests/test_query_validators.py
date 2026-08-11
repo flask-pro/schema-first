@@ -178,6 +178,24 @@ def test_query_validators__response__empty_body_in_spec(fx_openapi_3_2_0, fx_ope
     assert serialized_request == request
 
 
+def test_query_validators__binary_response(fx_openapi_3_2_0, fx_open_spec):
+    file_path = fx_openapi_3_2_0('query_validator/binary_response.yaml')
+    spec = fx_open_spec(file_path)
+    query_validator = HTTPQueryValidator(spec)
+
+    request = {
+        'endpoint': '/endpoint',
+        'method': 'get',
+        'content_type': 'multipart/form-data',
+        'status_code': '200',
+        'body': b'content',
+    }
+
+    serialized_request = query_validator.response_handler(**request)
+
+    assert serialized_request == request
+
+
 def test_query_validators__response__empty_body_in_spec_error(fx_openapi_3_2_0, fx_open_spec):
     file_path = fx_openapi_3_2_0('query_validator/empty_body.yaml')
     spec = fx_open_spec(file_path)

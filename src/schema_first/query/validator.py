@@ -85,6 +85,12 @@ class HTTPQueryValidator:
                 body_schema = content_type.get('schema')
                 if body_schema:
                     response_fields['body'] = fields.Nested(body_schema)
+            elif 'application/octet-stream' in content:
+                response_fields['content_type'] = fields.String()
+                response_fields['body'] = fields.Raw()
+            else:
+                raise NotImplementedError
+
         else:
             # If body must be empty.
             if data.get('content_type'):
