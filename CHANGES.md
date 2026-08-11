@@ -1,3 +1,7 @@
+## Version 0.16.2
+
+* Fix empty response body.
+
 ## Version 0.16.1
 
 * Fix headers validating.

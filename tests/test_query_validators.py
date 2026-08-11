@@ -166,7 +166,12 @@ def test_query_validators__response__empty_body_in_spec(fx_openapi_3_2_0, fx_ope
     spec = fx_open_spec(file_path)
     query_validator = HTTPQueryValidator(spec)
 
-    request = {'endpoint': '/endpoint', 'method': 'get', 'status_code': '204'}
+    request = {
+        'endpoint': '/endpoint',
+        'method': 'get',
+        'content_type': 'application/json',
+        'status_code': '204',
+    }
 
     serialized_request = query_validator.response_handler(**request)
 
