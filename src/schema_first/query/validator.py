@@ -85,6 +85,10 @@ class HTTPQueryValidator:
                 body_schema = content_type.get('schema')
                 if body_schema:
                     response_fields['body'] = fields.Nested(body_schema)
+        else:
+            # If body must be empty.
+            if data.get('content_type'):
+                response_fields['content_type'] = fields.String()
 
         response_schema = Schema.from_dict(response_fields)
         response_schema.Meta.unknown = 'raise'
@@ -128,7 +132,7 @@ class HTTPQueryValidator:
         endpoint: str,
         method: t.Literal['post', 'get', 'update', 'patch', 'delete'],
         status_code: str,
-        content_type: t.Literal['application/json'] or ... = ...,
+        content_type: str or ... = ...,
         body: dict[str, t.Any] or ... = ...,
     ):
         all_kwargs = {

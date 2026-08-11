@@ -20,18 +20,18 @@ license-files = ["LICENSE.txt"]
 name = "Schema-First"
 readme = "README.md"
 requires-python = ">=3.12"
-version = "0.16.1"
+version = "0.16.2"
 
 [project.optional-dependencies]
 dev = [
   "bandit>=1.9.3",
   "build>=1.4.0",
   'openapi-spec-validator>=0.7.1',
-  "pre-commit>=4.5.1",
+  "pre-commit>=4.6.2",
   "pytest>=9.1.1",
   "pytest-cov>=7.0.0",
   "python-dotenv>=1.2.1",
-  "tox==4.18.0",
+  "tox==4.59.0",
   "twine==6.2.0"
 ]
 
