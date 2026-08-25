@@ -40,7 +40,7 @@ changelog = "https://github.com/flask-pro/schema-first/blob/master/CHANGES.md"
 repository = "https://github.com/flask-pro/schema-first"
 
 [tool.bandit]
-exclude_dirs = ["tests"]
+exclude_dirs = ["tests", "venv"]
 
 [tool.black]
 extend-exclude = '''

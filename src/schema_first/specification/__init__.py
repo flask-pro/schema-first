@@ -113,17 +113,18 @@ class Specification:
             'object': self._convert_object_field,
             'array': self._convert_array_field,
         }
+
+        field_type = field_schema['type']
+
         try:
-            field_type = field_schema['type']
+            if field_type in ['object']:
+                converted_field_schema = _converters[field_type](field_schema, as_schema=as_schema)
+            else:
+                converted_field_schema = _converters[field_type](field_schema)
         except KeyError:
             raise NotImplementedError(
                 f'Schema <{field_schema}> for type <{field_schema["type"]}> not be converted.'
             )
-
-        if field_type in ['object']:
-            converted_field_schema = _converters[field_type](field_schema, as_schema=as_schema)
-        else:
-            converted_field_schema = _converters[field_type](field_schema)
 
         return converted_field_schema
 
