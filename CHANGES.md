@@ -2,7 +2,6 @@
 
 * Fix converted nested fields.
 
-
 ## Version 0.16.3
 
 * Fix binary response body.
