@@ -20,7 +20,7 @@ license-files = ["LICENSE.txt"]
 name = "Schema-First"
 readme = "README.md"
 requires-python = ">=3.12"
-version = "0.16.3"
+version = "0.16.4"
 
 [project.optional-dependencies]
 dev = [
@@ -40,7 +40,7 @@ changelog = "https://github.com/flask-pro/schema-first/blob/master/CHANGES.md"
 repository = "https://github.com/flask-pro/schema-first"
 
 [tool.bandit]
-exclude_dirs = ["tests"]
+exclude_dirs = ["tests", "venv"]
 
 [tool.black]
 extend-exclude = '''
@@ -51,7 +51,7 @@ extend-exclude = '''
 include = '\.pyi?$'
 line-length = 100
 skip-string-normalization = true
-target-version = ['py313']
+target-version = ['py312']
 
 [tool.isort]
 include_trailing_comma = true

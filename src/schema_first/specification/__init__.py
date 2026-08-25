@@ -8,6 +8,7 @@ from marshmallow import RAISE
 from marshmallow import Schema
 from marshmallow import validate
 from marshmallow.fields import Field
+from marshmallow.fields import Nested
 
 from schema_first.openapi import OpenAPI
 from schema_first.specification.spilli_api import ConverterOpenAPIToSpilliAPI
@@ -103,8 +104,8 @@ class Specification:
         initialized_schema.required = field_schema.get('required', False)
         return initialized_schema
 
-    def _convert_field_any_type(self, field_schema: dict):
-        field_schema_converters = {
+    def _convert_field_any_type(self, field_schema: dict, as_schema: bool = False):
+        _converters = {
             'string': self._convert_string_field,
             'boolean': self._convert_boolean_field,
             'number': self._convert_number_field,
@@ -112,8 +113,14 @@ class Specification:
             'object': self._convert_object_field,
             'array': self._convert_array_field,
         }
+
+        field_type = field_schema['type']
+
         try:
-            converted_field_schema = field_schema_converters[field_schema['type']](field_schema)
+            if field_type in ['object']:
+                converted_field_schema = _converters[field_type](field_schema, as_schema=as_schema)
+            else:
+                converted_field_schema = _converters[field_type](field_schema)
         except KeyError:
             raise NotImplementedError(
                 f'Schema <{field_schema}> for type <{field_schema["type"]}> not be converted.'
@@ -121,7 +128,9 @@ class Specification:
 
         return converted_field_schema
 
-    def _convert_object_field(self, open_api_schema: dict) -> type[Schema]:
+    def _convert_object_field(
+        self, open_api_schema: dict, many: bool = False, as_schema: bool = False
+    ) -> type[Schema] | Nested:
         marshmallow_schema = {}
         required_fields = open_api_schema.get('required', [])
         for field_name, field_schema in open_api_schema['properties'].items():
@@ -136,13 +145,15 @@ class Specification:
         else:
             marshmallow_schema['unknown'] = INCLUDE
 
-        return Schema.from_dict(marshmallow_schema)
+        if as_schema:
+            return Schema.from_dict(marshmallow_schema)
+
+        return fields.Nested(Schema.from_dict(marshmallow_schema), many=many)
 
     def _convert_array_field(self, open_api_schema: dict) -> Field:
         array_item_schema = open_api_schema['items']
         if array_item_schema['type'] == 'object':
-            nested_field = self._convert_object_field(array_item_schema)
-            array_field = fields.Nested(nested_field, many=True)
+            array_field = self._convert_object_field(array_item_schema, many=True)
         else:
             nested_field = FIELDS_VIA_TYPES[array_item_schema['type']]()
             array_field = fields.List(nested_field)
@@ -154,7 +165,7 @@ class Specification:
                 # Checking for object type is needed to skip already resolved schemes.
                 # This is necessary because of passing variables by reference in Python.
                 if k == 'schema' and isinstance(v, dict):
-                    obj[k] = self._convert_field_any_type(v)
+                    obj[k] = self._convert_field_any_type(v, as_schema=True)
                 else:
                     self._reassembly_of_schemas(v)
 

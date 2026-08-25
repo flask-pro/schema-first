@@ -1,11 +1,11 @@
 from marshmallow import fields
 from marshmallow import validate
 
-from ..base import BaseSchema
-from ..base import DocStringFields
-from ..constants import RE_VERSION
-from .contact_object_schema import ContactObjectSchema
-from .license_object_schema import LicenseObjectSchema
+from schema_first.openapi.schemas.base import BaseSchema
+from schema_first.openapi.schemas.base import DocStringFields
+from schema_first.openapi.schemas.constants import RE_VERSION
+from schema_first.openapi.schemas.v3_2.contact_object_schema import ContactObjectSchema
+from schema_first.openapi.schemas.v3_2.license_object_schema import LicenseObjectSchema
 
 
 class InfoObjectSchema(DocStringFields, BaseSchema):
