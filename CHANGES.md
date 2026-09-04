@@ -1,3 +1,7 @@
+## Version 0.16.5
+
+* Fix validate number and integer fields.
+
 ## Version 0.16.4
 
 * Fix converted nested fields.

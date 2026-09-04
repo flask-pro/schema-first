@@ -14,8 +14,8 @@ def fx_field_integer__full(fx_field_integer__required) -> dict:
         'description': 'Example to integer field.',
         'minimum': -10,
         'maximum': 10,
-        'exclusiveMinimum': -5,
-        'exclusiveMaximum': 5,
+        'exclusiveMinimum': True,
+        'exclusiveMaximum': False,
         'multipleOf': 1,
         'default': 0,
     }

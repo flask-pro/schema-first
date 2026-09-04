@@ -25,11 +25,11 @@ def test_number_field__default__type(fx_field_number_full, value, message):
     assert str(e.value) == message
 
 
-@pytest.mark.parametrize('value', [-11.1, -6.6, 6.6, 11.1])
+@pytest.mark.parametrize('value', [-11.1, 11.1])
 def test_number_field__default__value(fx_field_number_full, value):
     fx_field_number_full['minimum'] = -10
-    fx_field_number_full['exclusiveMinimum'] = -5
-    fx_field_number_full['exclusiveMaximum'] = 5
+    fx_field_number_full['exclusiveMinimum'] = True
+    fx_field_number_full['exclusiveMaximum'] = False
     fx_field_number_full['maximum'] = 10
     fx_field_number_full['default'] = value
 

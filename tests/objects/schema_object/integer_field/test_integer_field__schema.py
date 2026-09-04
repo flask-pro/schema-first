@@ -25,11 +25,11 @@ def test_integer_field__default__type(fx_field_integer__full, value, message):
     assert str(e.value) == message
 
 
-@pytest.mark.parametrize('value', [-11, -6, 6, 11])
+@pytest.mark.parametrize('value', [-10, 11])
 def test_integer_field__default__value(fx_field_integer__full, value):
     fx_field_integer__full['minimum'] = -10
-    fx_field_integer__full['exclusiveMinimum'] = -5
-    fx_field_integer__full['exclusiveMaximum'] = 5
+    fx_field_integer__full['exclusiveMinimum'] = True
+    fx_field_integer__full['exclusiveMaximum'] = False
     fx_field_integer__full['maximum'] = 10
     fx_field_integer__full['default'] = value
 
