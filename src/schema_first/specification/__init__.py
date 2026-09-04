@@ -55,7 +55,18 @@ class Specification:
                 validators.append(validate.Regexp(pattern))
 
         if schema['type'] in ['integer', 'number']:
-            validators.append(validate.Range(min=schema.get('minimum'), max=schema.get('maximum')))
+            min = schema.get('minimum')
+            max = schema.get('maximum')
+
+            exclusive_min = not schema.get('exclusiveMinimum', False)
+            exclusive_max = not schema.get('exclusiveMaximum', False)
+
+            if min or max:
+                validators.append(
+                    validate.Range(
+                        min=min, min_inclusive=exclusive_min, max=max, max_inclusive=exclusive_max
+                    )
+                )
 
         if required_values := schema.get('enum'):
             validators.append(validate.OneOf(required_values))
@@ -99,7 +110,7 @@ class Specification:
             )
 
         initialized_schema = schema()
-        initialized_schema.validate = self._make_field_validators(field_schema)
+        initialized_schema.validators = self._make_field_validators(field_schema)
         initialized_schema.allow_none = field_schema.get('nullable', False)
         initialized_schema.required = field_schema.get('required', False)
         return initialized_schema

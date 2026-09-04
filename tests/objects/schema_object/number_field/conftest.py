@@ -14,8 +14,8 @@ def fx_field_number_full(fx_field_number_required) -> dict:
         'description': 'Example to number field.',
         'minimum': -10.0,
         'maximum': 10,
-        'exclusiveMinimum': -5.0,
-        'exclusiveMaximum': 5,
+        'exclusiveMinimum': True,
+        'exclusiveMaximum': False,
         'multipleOf': 0.5,
         'default': 0.1,
     }

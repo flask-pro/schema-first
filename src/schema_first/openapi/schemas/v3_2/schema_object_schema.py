@@ -183,8 +183,8 @@ class NumberFieldSchema(BaseSchemaField):
     format = fields.String(validate=validate.OneOf(FLOAT_FORMATS))
     minimum = fields.Float()
     maximum = fields.Float()
-    exclusiveMinimum = fields.Float()
-    exclusiveMaximum = fields.Float()
+    exclusiveMinimum = fields.Boolean()
+    exclusiveMaximum = fields.Boolean()
     multipleOf = fields.Float(validate=[validate.Range(min=0, min_inclusive=False)])
     default = fields.Float()
     example = fields.Float()
@@ -194,29 +194,32 @@ class NumberFieldSchema(BaseSchemaField):
         if 'default' in data:
             default = data['default']
 
-            minimum = data.get('minimum', -math.inf)
-            maximum = data.get('maximum', math.inf)
-            if not minimum <= default <= maximum:
-                raise ValidationError(
-                    f'Value <{default}> must be greater than or equal to <{minimum}>'
-                    f' and less than or equal to <{maximum}>.'
-                )
+            min = data.get('minimum', -math.inf)
+            max = data.get('maximum', math.inf)
 
-            exclusive_minimum = data.get('exclusiveMinimum', -math.inf)
-            exclusive_maximum = data.get('exclusiveMaximum', math.inf)
-            if not exclusive_minimum < default < exclusive_maximum:
-                raise ValidationError(
-                    f'Value <{default}> must be greater to <{minimum}> and less to <{maximum}>.'
-                )
+            exclusive_min = data.get('exclusiveMinimum', False)
+            exclusive_max = data.get('exclusiveMaximum', False)
+
+            if exclusive_min:
+                if min >= default:
+                    raise ValidationError(f'Value <{default}> must be greater than to <{min}>.')
+            else:
+                if min > default:
+                    raise ValidationError(
+                        f'Value <{default}> must be greater than or equal to <{min}>.'
+                    )
+
+            if exclusive_max:
+                if max <= default:
+                    raise ValidationError(f'Value <{default}> must be less than to <{max}>.')
+            else:
+                if max < default:
+                    raise ValidationError(
+                        f'Value <{default}> must be less than or equal to <{max}>.'
+                    )
 
     @validates_schema
     def validate_min_max(self, data, **kwargs):
-        if 'exclusiveMinimum' in data and 'exclusiveMaximum' in data:
-            exclusive_min = data['exclusiveMinimum']
-            exclusive_max = data['exclusiveMaximum']
-            if exclusive_min > exclusive_max:
-                raise ValidationError(f'<{exclusive_min}> cannot be greater than <{exclusive_max}>')
-
         if 'minimum' in data and 'maximum' in data:
             minimum = data['minimum']
             maximum = data['maximum']
@@ -228,8 +231,8 @@ class IntegerFieldSchema(NumberFieldSchema):
     format = fields.String(validate=validate.OneOf(INT_FORMATS))
     minimum = fields.Integer()
     maximum = fields.Integer()
-    exclusiveMinimum = fields.Integer()
-    exclusiveMaximum = fields.Integer()
+    exclusiveMinimum = fields.Boolean()
+    exclusiveMaximum = fields.Boolean()
     multipleOf = fields.Integer(validate=[validate.Range(min=0, min_inclusive=False)])
     default = fields.Integer()
     example = fields.Integer()
