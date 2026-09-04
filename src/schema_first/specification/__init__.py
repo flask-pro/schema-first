@@ -57,16 +57,16 @@ class Specification:
         if schema['type'] in ['integer', 'number']:
             min = schema.get('minimum')
             max = schema.get('maximum')
-            if min or max:
-                validators.append(validate.Range(min=min, max=max))
 
-            exclusive_min = schema.get('exclusiveMinimum')
-            exclusive_max = schema.get('exclusiveMaximum')
-            validators.append(
-                validate.Range(
-                    min=exclusive_min, min_inclusive=False, max=exclusive_max, max_inclusive=False
+            exclusive_min = not schema.get('exclusiveMinimum', False)
+            exclusive_max = not schema.get('exclusiveMaximum', False)
+
+            if min or max:
+                validators.append(
+                    validate.Range(
+                        min=min, min_inclusive=exclusive_min, max=max, max_inclusive=exclusive_max
+                    )
                 )
-            )
 
         if required_values := schema.get('enum'):
             validators.append(validate.OneOf(required_values))
